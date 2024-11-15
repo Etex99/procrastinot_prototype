@@ -19,40 +19,33 @@ class SelectTimeField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MyBodyText(text: labelText),
-        Row(
-          children: [
-            SizedBox(
-              width: 150.0,
-              height: 50.0,
-              child: TextField(
-                controller: controller,
-                keyboardType: const TextInputType.numberWithOptions(),
-                style: MyTheme.BODY_TEXT_STYLE,
-                cursorColor: MyTheme.ACCENT_COLOR,
-                decoration: InputDecoration(
-                  icon: const Icon(
-                    Icons.alarm,
-                    color: MyTheme.ACCENT_COLOR,
-                    size: 25.0,
-                  ),
-                  hintText: hintText,
-                  hintStyle: MyTheme.INFO_TEXT_STYLE,
-                ),
-                // TODO: show error
-                onEditingComplete: () {
-                  RegExpMatch? match =
-                      RegExp(r"^([0-1]?[0-9]|2[0-3]).[0-5][0-9]$")
-                          .firstMatch(controller.value.text);
-                  if (match == null) {
-                    controller.clear();
-                  }
-                },
+        Flexible(flex: 1, child: MyBodyText(text: labelText)),
+        Flexible(
+          flex: 1,
+          child: TextField(
+            controller: controller,
+            keyboardType: const TextInputType.numberWithOptions(),
+            style: MyTheme.INPUT_TEXT_STYLE,
+            cursorColor: MyTheme.ACCENT_COLOR,
+            decoration: InputDecoration(
+              icon: const Icon(
+                Icons.alarm,
+                color: MyTheme.PRIMARY_COLOR_LIGHT,
+                size: 25.0,
               ),
+              hintText: hintText,
+              hintStyle: MyTheme.HINT_TEXT_STYLE,
             ),
-            const Spacer(flex: 1)
-          ],
-        ),
+            // TODO: show error
+            onEditingComplete: () {
+              RegExpMatch? match = RegExp(r"^([0-1]?[0-9]|2[0-3]).[0-5][0-9]$")
+                  .firstMatch(controller.value.text);
+              if (match == null) {
+                controller.clear();
+              }
+            },
+          ),
+        )
       ],
     );
   }
@@ -74,30 +67,24 @@ class SelectNumberField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MyBodyText(text: labelText),
-        Row(
-          children: [
-            SizedBox(
-                width: 100.0,
-                height: 50.0,
-                child: TextField(
-                  controller: controller,
-                  keyboardType: TextInputType.number,
-                  style: MyTheme.BODY_TEXT_STYLE,
-                  cursorColor: MyTheme.ACCENT_COLOR,
-                  decoration: InputDecoration(
-                    icon: const Icon(
-                      Icons.onetwothree,
-                      color: MyTheme.ACCENT_COLOR,
-                      size: 25.0,
-                    ),
-                    hintText: hintText,
-                    hintStyle: MyTheme.INFO_TEXT_STYLE,
-                  ),
-                )),
-            const Spacer(flex: 1)
-          ],
-        ),
+        Flexible(flex: 1, child: MyBodyText(text: labelText)),
+        Flexible(
+            flex: 1,
+            child: TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              style: MyTheme.INPUT_TEXT_STYLE,
+              cursorColor: MyTheme.ACCENT_COLOR,
+              decoration: InputDecoration(
+                icon: const Icon(
+                  Icons.onetwothree,
+                  color: MyTheme.PRIMARY_COLOR_LIGHT,
+                  size: 25.0,
+                ),
+                hintText: hintText,
+                hintStyle: MyTheme.HINT_TEXT_STYLE,
+              ),
+            ))
       ],
     );
   }
@@ -120,32 +107,29 @@ class EnterStringField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        MyBodyText(text: labelText),
-        Row(
-          children: [
-            SizedBox(
-                width: 300.0,
-                height: 50.0,
-                child: TextField(
-                  controller: controller,
-                  maxLines: 1,
-                  maxLength: 100,
-                  keyboardType: TextInputType.text,
-                  style: MyTheme.BODY_TEXT_STYLE,
-                  cursorColor: MyTheme.ACCENT_COLOR,
-                  decoration: InputDecoration(
-                    icon: const Icon(
-                      Icons.notes,
-                      color: MyTheme.ACCENT_COLOR,
-                      size: 25.0,
-                    ),
-                    hintText: hintText,
-                    hintStyle: MyTheme.INFO_TEXT_STYLE,
-                  ),
-                )),
-            const Spacer(flex: 1)
-          ],
-        ),
+        Flexible(flex: 1, child: MyBodyText(text: labelText)),
+        Expanded(
+            flex: 3,
+            child: TextField(
+              controller: controller,
+              textAlignVertical: TextAlignVertical.bottom,
+              maxLength: 80,
+              maxLines: null,
+              minLines: null,
+              expands: true,
+              keyboardType: TextInputType.text,
+              style: MyTheme.INPUT_TEXT_STYLE,
+              cursorColor: MyTheme.ACCENT_COLOR,
+              decoration: InputDecoration(
+                icon: const Icon(
+                  Icons.notes,
+                  color: MyTheme.PRIMARY_COLOR_LIGHT,
+                  size: 25.0,
+                ),
+                hintText: hintText,
+                hintStyle: MyTheme.HINT_TEXT_STYLE,
+              ),
+            )),
       ],
     );
   }

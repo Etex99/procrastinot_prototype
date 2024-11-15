@@ -26,8 +26,14 @@ class MyTheme {
       fontSize: 24,
       fontWeight: FontWeight.normal);
 
-  static const TextStyle INFO_TEXT_STYLE = TextStyle(
+  static const TextStyle HINT_TEXT_STYLE = TextStyle(
       color: PRIMARY_COLOR_LIGHT,
+      height: 1.0,
+      fontSize: 24,
+      fontStyle: FontStyle.italic);
+      
+  static const TextStyle INPUT_TEXT_STYLE = TextStyle(
+      color: ACCENT_COLOR,
       height: 1.0,
       fontSize: 24,
       fontStyle: FontStyle.italic);
