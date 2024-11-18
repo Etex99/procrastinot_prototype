@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:procrastinot_prototype/storage/internal_storage.dart';
+import 'package:procrastinot_prototype/util/format.dart';
 
 void main(List<String> args) {
 
@@ -26,13 +27,13 @@ void main(List<String> args) {
     });
     test('Default study duration -preference setter/getter', () async {
       InternalStorageHandler i = InternalStorageHandler();
-      const Duration d = Duration(hours: 4, minutes: 2);
+      const Duration d = Duration(hours: 4, minutes: 20);
       await i.setDefaultStudyDuration(d);
       expect(await i.getDefaultStudyDuration(), d);
     });
     test('Default break duration -preference setter/getter', () async {
       InternalStorageHandler i = InternalStorageHandler();
-      const Duration d = Duration(hours: 66, minutes: 6);
+      const Duration d = Duration(hours: 66, minutes: 60);
       await i.setDefaultBreakDuration(d);
       expect(await i.getDefaultBreakDuration(), d);
     });
@@ -44,4 +45,42 @@ void main(List<String> args) {
     
   });
 
+  group('-- My Formatter --', () {
+    test('String => TimeOfDay', () {
+      expect(MyFormatter.stringToTimeOfDay('1.00'), const TimeOfDay(hour: 1, minute: 0));
+      expect(MyFormatter.stringToTimeOfDay('1.01'), const TimeOfDay(hour: 1, minute: 1));
+      expect(MyFormatter.stringToTimeOfDay('0.01'), const TimeOfDay(hour: 0, minute: 1));
+      expect(MyFormatter.stringToTimeOfDay('0.00'), const TimeOfDay(hour: 0, minute: 0));
+      expect(MyFormatter.stringToTimeOfDay('11.00'), const TimeOfDay(hour: 11, minute: 0));
+      expect(MyFormatter.stringToTimeOfDay('11.11'), const TimeOfDay(hour: 11, minute: 11));
+      expect(MyFormatter.stringToTimeOfDay('0.11'), const TimeOfDay(hour: 0, minute: 11));
+    });
+    test('TimeOfDay => String', () {
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 1, minute: 0)), '1.00');
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 1, minute: 1)), '1.01');
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 0, minute: 1)), '0.01');
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 0, minute: 0)), '0.00');
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 11, minute: 0)), '11.00');
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 11, minute: 11)), '11.11');
+      expect(MyFormatter.timeOfDayToString(const TimeOfDay(hour: 0, minute: 11)), '0.11');
+    });
+    test('Duration => String', () {
+      expect(MyFormatter.durationToString(const Duration(hours: 1, minutes: 0)), '1.00');
+      expect(MyFormatter.durationToString(const Duration(hours: 1, minutes: 1)), '1.01');
+      expect(MyFormatter.durationToString(const Duration(hours: 0, minutes: 1)), '0.01');
+      expect(MyFormatter.durationToString(const Duration(hours: 0, minutes: 0)), '0.00');
+      expect(MyFormatter.durationToString(const Duration(hours: 11, minutes: 0)), '11.00');
+      expect(MyFormatter.durationToString(const Duration(hours: 11, minutes: 11)), '11.11');
+      expect(MyFormatter.durationToString(const Duration(hours: 0, minutes: 11)), '0.11');
+    });
+    test('String => Duration', () {
+      expect(MyFormatter.stringToDuration('1.00'), const Duration(hours: 1, minutes: 0));
+      expect(MyFormatter.stringToDuration('1.01'), const Duration(hours: 1, minutes: 1));
+      expect(MyFormatter.stringToDuration('0.01'), const Duration(hours: 0, minutes: 1));
+      expect(MyFormatter.stringToDuration('0.00'), const Duration(hours: 0, minutes: 0));
+      expect(MyFormatter.stringToDuration('11.00'), const Duration(hours: 11, minutes: 0));
+      expect(MyFormatter.stringToDuration('11.11'), const Duration(hours: 11, minutes: 11));
+      expect(MyFormatter.stringToDuration('0.11'), const Duration(hours: 0, minutes: 11));
+    });
+  });
 }

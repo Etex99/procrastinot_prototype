@@ -2,3 +2,4 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   errors:
     constant_identifier_names: ignore
+    unnecessary_brace_in_string_interps: ignore
