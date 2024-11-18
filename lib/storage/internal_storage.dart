@@ -9,6 +9,19 @@ class InternalStorageHandler {
   static const String DEFAULT_BREAK_DURATION = 'DEFAULT_BREAK_DURATION';
   static const String DEFAULT_NUMBER_OF_BREAKS = 'DEFAULT_NUMBER_OF_BREAKS';
 
+  static Map<String, dynamic> tempSettingsFormValues = {};
+
+  Future<void> saveSettings() async {
+    if (tempSettingsFormValues.containsKey(SEND_NOTIFICATIONS)) await setSendNotifications(tempSettingsFormValues[SEND_NOTIFICATIONS]);
+    if (tempSettingsFormValues.containsKey(NOTIFICATION_TIME)) await setNotificationTime(tempSettingsFormValues[NOTIFICATION_TIME]);
+    if (tempSettingsFormValues.containsKey(NOTIFICATION_DAYS)) await setNotificationDays(tempSettingsFormValues[NOTIFICATION_DAYS]);
+    if (tempSettingsFormValues.containsKey(DEFAULT_STUDY_DURATION)) await setDefaultStudyDuration(tempSettingsFormValues[DEFAULT_STUDY_DURATION]);
+    if (tempSettingsFormValues.containsKey(DEFAULT_BREAK_DURATION)) await setDefaultBreakDuration(tempSettingsFormValues[DEFAULT_BREAK_DURATION]);
+    if (tempSettingsFormValues.containsKey(DEFAULT_NUMBER_OF_BREAKS)) await setDefaultNumberOfBreaks(tempSettingsFormValues[DEFAULT_NUMBER_OF_BREAKS]);
+
+    tempSettingsFormValues.clear();
+  }
+
   Future<void> setSendNotifications(bool sendNotifications) async {
     final SharedPreferencesAsync sp = SharedPreferencesAsync();
     await sp.setBool(SEND_NOTIFICATIONS, sendNotifications);
