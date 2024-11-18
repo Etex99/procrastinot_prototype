@@ -45,18 +45,18 @@ void main(List<String> args) {
     test('Save Settings', () async {
       InternalStorageHandler.tempSettingsFormValues = {
         InternalStorageHandler.SEND_NOTIFICATIONS: false,
-        InternalStorageHandler.NOTIFICATION_TIME: const TimeOfDay(hour: 3, minute: 30),
+        InternalStorageHandler.NOTIFICATION_TIME: '15.30',
         InternalStorageHandler.NOTIFICATION_DAYS: [true, true, true, true, true, false, false],
-        InternalStorageHandler.DEFAULT_STUDY_DURATION: const Duration(hours: 1, minutes: 10),
-        InternalStorageHandler.DEFAULT_BREAK_DURATION: const Duration(minutes: 15),
-        InternalStorageHandler.DEFAULT_NUMBER_OF_BREAKS: 3
+        InternalStorageHandler.DEFAULT_STUDY_DURATION: '1.10',
+        InternalStorageHandler.DEFAULT_BREAK_DURATION: '0.15',
+        InternalStorageHandler.DEFAULT_NUMBER_OF_BREAKS: '3'
       };
 
       InternalStorageHandler i = InternalStorageHandler();
       await i.saveSettings();
 
       expect(await i.getSendNotifications(), false);
-      expect(await i.getNotificationTime(), const TimeOfDay(hour: 3, minute: 30));
+      expect(await i.getNotificationTime(), const TimeOfDay(hour: 15, minute: 30));
       expect(await i.getNotificationDays(), [true, true, true, true, true, false, false]);
       expect(await i.getDefaultStudyDuration(), const Duration(hours: 1, minutes: 10));
       expect(await i.getDefaultBreakDuration(), const Duration(minutes: 15));
