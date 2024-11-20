@@ -25,6 +25,17 @@ class _SetupFormState extends State<SetupForm> {
     _initTextControllers();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    studyDurationC.dispose();
+    breakDurationC.dispose();
+    numberBreaksC.dispose();
+    task1C.dispose();
+    task2C.dispose();
+    task3C.dispose();
+  }
+
   void _initTextControllers() async {
     InternalStorageHandler i = InternalStorageHandler();
     studyDurationC = TextEditingController(
@@ -41,11 +52,9 @@ class _SetupFormState extends State<SetupForm> {
   Widget build(BuildContext context) {
     return ListView(
       itemExtentBuilder: (index, _) {
-        if (index <= 4) {
-          return 100;
-        } else {
-          return 150;
-        }
+        if ((index == 0) | (index == 5)) return 50;
+        if (index == 4) return 25; 
+        return 150;
       },
       children: [
         const Align(
@@ -65,6 +74,7 @@ class _SetupFormState extends State<SetupForm> {
             labelText: 'Number of breaks:',
             hintText: '1',
             controller: numberBreaksC),
+        const Divider(color: MyTheme.PRIMARY_COLOR),
         const Align(
             alignment: Alignment.centerLeft,
             child: MySubtitle(text: 'Priority tasks')),

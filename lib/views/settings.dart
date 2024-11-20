@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/components/app_bar.dart';
 import 'package:procrastinot_prototype/components/settings_form.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
+import 'package:procrastinot_prototype/storage/internal_storage.dart';
 
 class SettingsView extends StatelessWidget {
   
@@ -31,8 +32,7 @@ class SettingsView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         IconButton(
-                            // TODO: onpressed
-                            onPressed: () {},
+                            onPressed: () {InternalStorageHandler().saveSettings();},
                             icon: const Icon(
                               Icons.save,
                               color: MyTheme.ACCENT_COLOR,

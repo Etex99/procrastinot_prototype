@@ -6,7 +6,7 @@ class MyTheme {
   static const Color PRIMARY_COLOR = Color.fromARGB(255, 140, 10, 40);
   static const Color PRIMARY_COLOR_LIGHT = Color.fromARGB(255, 240, 163, 181);
   static const Color ACCENT_COLOR = Color.fromARGB(255, 33, 62, 24);
-  static const Color ACCENT_COLOR_LIGHT = Color.fromARGB(255, 179, 235, 162);
+  static const Color ACCENT_COLOR_LIGHT = Color.fromARGB(255, 159, 206, 145);
 
   static const TextStyle TITLE_TEXT_STYLE = TextStyle(
       color: ACCENT_COLOR,
@@ -27,7 +27,7 @@ class MyTheme {
       fontWeight: FontWeight.normal);
 
   static const TextStyle HINT_TEXT_STYLE = TextStyle(
-      color: PRIMARY_COLOR_LIGHT,
+      color: ACCENT_COLOR_LIGHT,
       height: 1.0,
       fontSize: 24,
       fontStyle: FontStyle.italic);
@@ -36,7 +36,12 @@ class MyTheme {
       color: ACCENT_COLOR,
       height: 1.0,
       fontSize: 24,
-      fontStyle: FontStyle.italic);
+      fontWeight: FontWeight.normal);
+  static const TextStyle ERROR_TEXT_STYLE = TextStyle(
+      color: Colors.red,
+      height: 1.0,
+      fontSize: 12,
+      fontWeight: FontWeight.normal);
 }
 
 class MyTitle extends StatelessWidget {

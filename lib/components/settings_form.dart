@@ -23,6 +23,15 @@ class _SettingsFormState extends State<SettingsForm> {
     _initTextControllers();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    notificationTimeC.dispose();
+    studyTimeC.dispose();
+    breakTimeC.dispose();
+    numberBreaksC.dispose();
+  }
+
   void _initTextControllers() async {
     InternalStorageHandler i = InternalStorageHandler();
     notificationTimeC = TextEditingController(
@@ -65,11 +74,15 @@ class _SettingsFormState extends State<SettingsForm> {
     );
 
     return ListView(
-      itemExtent: 100.0,
+      itemExtentBuilder: (index, _) {
+        if ((index == 0) | (index == 4)) return 50;
+        if (index == 3) return 25;
+        return 150;
+      },
       children: [
         const Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
+          children: [
             MySubtitle(text: 'Reminders'),
             Spacer(flex: 1),
             SizedBox(width: 50.0, height: 50.0, child: Placeholder()),
@@ -79,23 +92,27 @@ class _SettingsFormState extends State<SettingsForm> {
           labelText: 'Remind me to study at:',
           hintText: '16.00',
           controller: notificationTimeC,
-        ),
+          savePropertyName: InternalStorageHandler.NOTIFICATION_TIME),
         selectDays,
+        const Divider(color: MyTheme.PRIMARY_COLOR),
         const Align(
             alignment: Alignment.centerLeft,
             child: MySubtitle(text: 'Defaults')),
         SelectTimeField(
             labelText: 'Study session duration:',
             hintText: '3.00',
-            controller: studyTimeC),
+            controller: studyTimeC,
+            savePropertyName: InternalStorageHandler.DEFAULT_STUDY_DURATION),
         SelectTimeField(
             labelText: 'Study break duration:',
             hintText: '0.15',
-            controller: breakTimeC),
+            controller: breakTimeC,
+            savePropertyName: InternalStorageHandler.DEFAULT_BREAK_DURATION),
         SelectNumberField(
             labelText: 'Number of breaks:',
             hintText: '1',
-            controller: numberBreaksC)
+            controller: numberBreaksC,
+            savePropertyName: InternalStorageHandler.DEFAULT_NUMBER_OF_BREAKS)
       ],
     );
   }
