@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/components/app_bar.dart';
+import 'package:procrastinot_prototype/components/below_keyboard.dart';
 import 'package:procrastinot_prototype/components/setup_form.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
 
@@ -23,25 +24,27 @@ class SessionSetupView extends StatelessWidget {
                           padding: EdgeInsets.all(32.0),
                           child: SetupForm())),
                 ),
-                Container(
-                    color: MyTheme.BACKGROUND_COLOR,
-                    height: 100.0,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        const Spacer(flex: 1),
-                        IconButton(
-                            // TODO: on pressed
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.check_box,
-                              color: MyTheme.ACCENT_COLOR,
-                              size: 50.0,
-                            )),
-                        const SizedBox(width: 32.0)
-                      ],
-                    ))
+                BelowKeyboard(
+                  child: Container(
+                      color: MyTheme.BACKGROUND_COLOR,
+                      height: 100.0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          const Spacer(flex: 1),
+                          IconButton(
+                              // TODO: on pressed
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.check_box,
+                                color: MyTheme.ACCENT_COLOR,
+                                size: 50.0,
+                              )),
+                          const SizedBox(width: 32.0)
+                        ],
+                      )),
+                )
               ],
             )));
   }
