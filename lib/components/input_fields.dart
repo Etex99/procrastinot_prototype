@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
-import 'package:procrastinot_prototype/storage/internal_storage.dart';
 
 class SelectTimeField extends StatelessWidget {
   final String labelText;
   final String hintText;
   final TextEditingController controller;
-  final String savePropertyName;
+  final Function(String s) valueChanged;
 
   const SelectTimeField(
       {super.key,
       required this.labelText,
       required this.hintText,
       required this.controller,
-      this.savePropertyName = ''});
+      required this.valueChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -36,10 +35,7 @@ class SelectTimeField extends StatelessWidget {
                     controller.clear();
                     return 'Enter a valid time in \'hh.mm\' format.';
                   }
-                  if (savePropertyName != '') {
-                    InternalStorageHandler
-                        .tempSettingsFormValues[savePropertyName] = s;
-                  }
+                  valueChanged(s);
                   return null;
                 },
                 autovalidateMode: AutovalidateMode.onUnfocus,
@@ -75,13 +71,14 @@ class SelectNumberField extends StatelessWidget {
   final String labelText;
   final String hintText;
   final TextEditingController controller;
-  final String savePropertyName;
+  final Function(String s) valueChanged;
+
   const SelectNumberField(
       {super.key,
       required this.labelText,
       required this.hintText,
       required this.controller,
-      this.savePropertyName = ''});
+      required this.valueChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +99,7 @@ class SelectNumberField extends StatelessWidget {
                   controller.clear();
                   return 'Enter a number in the range 0-10.';
                 }
-                if (savePropertyName != '') {
-                  InternalStorageHandler
-                      .tempSettingsFormValues[savePropertyName] = s;
-                }
+                valueChanged(s);
                 return null;
               },
               autovalidateMode: AutovalidateMode.onUnfocus,
@@ -142,12 +136,14 @@ class EnterStringField extends StatelessWidget {
   final String labelText;
   final String hintText;
   final TextEditingController controller;
+  final Function(String s) valueChanged;
 
   const EnterStringField(
       {super.key,
       required this.labelText,
       required this.hintText,
-      required this.controller});
+      required this.controller,
+      required this.valueChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -160,6 +156,12 @@ class EnterStringField extends StatelessWidget {
             flex: 3,
             child: TextFormField(
               controller: controller,
+              validator: (String? s) {
+                if (s == null) return "This field cannot be empty.";
+                valueChanged(s);
+                return null;
+              },
+              autovalidateMode: AutovalidateMode.onUnfocus,
               textAlignVertical: TextAlignVertical.bottom,
               maxLength: 80,
               maxLines: 2,

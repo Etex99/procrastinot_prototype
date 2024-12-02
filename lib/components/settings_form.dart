@@ -92,7 +92,7 @@ class _SettingsFormState extends State<SettingsForm> {
           labelText: 'Remind me to study at:',
           hintText: '16.00',
           controller: notificationTimeC,
-          savePropertyName: InternalStorageHandler.NOTIFICATION_TIME),
+          valueChanged: (String s) => InternalStorageHandler.tempSettingsFormValues[InternalStorageHandler.NOTIFICATION_TIME] = s,),
         selectDays,
         const Divider(color: MyTheme.PRIMARY_COLOR),
         const Align(
@@ -102,17 +102,17 @@ class _SettingsFormState extends State<SettingsForm> {
             labelText: 'Study session duration:',
             hintText: '3.00',
             controller: studyTimeC,
-            savePropertyName: InternalStorageHandler.DEFAULT_STUDY_DURATION),
+          valueChanged: (String s) => InternalStorageHandler.tempSettingsFormValues[InternalStorageHandler.DEFAULT_STUDY_DURATION] = s,),
         SelectTimeField(
             labelText: 'Study break duration:',
             hintText: '0.15',
             controller: breakTimeC,
-            savePropertyName: InternalStorageHandler.DEFAULT_BREAK_DURATION),
+          valueChanged: (String s) => InternalStorageHandler.tempSettingsFormValues[InternalStorageHandler.DEFAULT_BREAK_DURATION] = s,),
         SelectNumberField(
             labelText: 'Number of breaks:',
             hintText: '1',
             controller: numberBreaksC,
-            savePropertyName: InternalStorageHandler.DEFAULT_NUMBER_OF_BREAKS)
+          valueChanged: (String s) => InternalStorageHandler.tempSettingsFormValues[InternalStorageHandler.DEFAULT_NUMBER_OF_BREAKS] = s,),
       ],
     );
   }

@@ -15,7 +15,8 @@ class MainApp extends StatelessWidget {
         routes: {
           '/home': (context) => const HomeView(),
           '/setup': (context) => const SessionSetupView(),
-          '/settings': (context) => const SettingsView()
+          '/settings': (context) => const SettingsView(),
+          '/session': (context) => const SessionView()
         }
     );
   }
