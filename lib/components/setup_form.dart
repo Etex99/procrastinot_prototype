@@ -67,8 +67,9 @@ class _SetupFormState extends State<SetupForm> {
     return ListView(
       itemExtentBuilder: (index, _) {
         if ((index == 0) | (index == 5)) return 50;
-        if (index == 4) return 25; 
-        return 150;
+        if (index == 4) return 25;
+        if (1 < index && index < 4) return 100;
+        return 125;
       },
       children: [
         const Align(

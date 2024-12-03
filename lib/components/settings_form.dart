@@ -77,7 +77,7 @@ class _SettingsFormState extends State<SettingsForm> {
       itemExtentBuilder: (index, _) {
         if ((index == 0) | (index == 4)) return 50;
         if (index == 3) return 25;
-        return 150;
+        return 100;
       },
       children: [
         const Row(

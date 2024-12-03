@@ -34,11 +34,16 @@ class _SessionSetupViewState extends State<SessionSetupView> {
 
   @override
   Widget build(BuildContext context) {
+
+    MyAppBar appBar = MyAppBar('Session Setup');
+    IconButton help = IconButton(icon: const Icon(Icons.help), onPressed: () => Navigator.pushNamed(context, '/help'),);
+    appBar.actions!.add(help);
+
     // Return with confirm button if all required fields have value
     if (isFormValid) {
       return SafeArea(
           child: Scaffold(
-              appBar: MyAppBar('Session Setup'),
+              appBar: appBar,
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
@@ -80,7 +85,7 @@ class _SessionSetupViewState extends State<SessionSetupView> {
       // Return without confirm button if some required fields are empty
       return SafeArea(
           child: Scaffold(
-              appBar: MyAppBar('Session Setup'),
+              appBar: appBar,
               body: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.max,
