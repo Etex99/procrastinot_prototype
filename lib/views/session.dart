@@ -1,28 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:procrastinot_prototype/components/progress_bar.dart';
 import 'package:procrastinot_prototype/data/session.dart';
+import 'package:procrastinot_prototype/resources/theme.dart';
 
-class SessionView extends StatelessWidget {
+class SessionView extends StatefulWidget {
+
 
   const SessionView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    
+  State<SessionView> createState() => _SessionViewState();
+}
+
+class _SessionViewState extends State<SessionView> {
+  late final SessionManager sessionManager;
+
+  @override
+  void didChangeDependencies() {
     SessionViewArgs args = ModalRoute.of(context)!.settings.arguments as SessionViewArgs;
-
-    return SafeArea(child: Scaffold(body: Column(
-      children: [
-        Text(args.session.targetDuration.toString()),
-        Text(args.session.breakDuration.toString()),
-        Text(args.session.allowedBreaks.toString()),
-        Text(args.session.tasks![0].toString()),
-        Text(args.session.tasks![1].toString()),
-        Text(args.session.tasks![2].toString()),
-      ],
-    )));
-
+    sessionManager = SessionManager(session: args.session);
+    super.didChangeDependencies();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(child: Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            flex: 1,
+            child: Container(
+              color: MyTheme.BACKGROUND_COLOR,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      SessionProgressBar(session: sessionManager.session)
+                    ],
+                  ),
+                ),
+              ),
+            )),
+          Flexible(
+            flex: 4,
+            child: Container(
+              color: MyTheme.FOREGROUND_COLOR,))
+        ],
+      ),
+    ));
+  }
+
+  @override
+  void dispose() {
+    sessionManager.endSession();
+    super.dispose();
+  }
 }
 
 class SessionViewArgs {
