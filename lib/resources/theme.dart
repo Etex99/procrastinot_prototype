@@ -42,6 +42,12 @@ class MyTheme {
       height: 1.0,
       fontSize: 12,
       fontWeight: FontWeight.normal);
+  static const TextStyle STRIKE_THROUGH_BODY_TEXT_STYLE = TextStyle(
+      color: PRIMARY_COLOR,
+      height: 1.0,
+      fontSize: 18,
+      fontWeight: FontWeight.normal,
+      decoration: TextDecoration.lineThrough);
 }
 
 class MyTitle extends StatelessWidget {
@@ -76,15 +82,31 @@ class MySubtitle extends StatelessWidget {
 
 class MyBodyText extends StatelessWidget {
   final String text;
+  final bool strikeThrough;
 
-  const MyBodyText({super.key, required this.text});
+  const MyBodyText({super.key, required this.text, this.strikeThrough = false});
 
   @override
   Widget build(BuildContext context) {
+
+    Text textWidget;
+    if (strikeThrough) {
+      textWidget = Text(
+        text,
+        textAlign: TextAlign.start,
+        style: MyTheme.STRIKE_THROUGH_BODY_TEXT_STYLE,
+      );
+    } else {
+      textWidget = Text(
+        text,
+        textAlign: TextAlign.start,
+        style: MyTheme.BODY_TEXT_STYLE,
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(4),
-      child: Text(text,
-          textAlign: TextAlign.start, style: MyTheme.BODY_TEXT_STYLE),
+      child: textWidget
     );
   }
 }

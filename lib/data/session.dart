@@ -26,6 +26,8 @@ class SessionManager {
     _stopwatch.stop();
     if (!_onBreak) session.elapsedTime += _stopwatch.elapsed;
   }
+
+  bool isOnBreak() => _onBreak;
 }
 
 class Session {
