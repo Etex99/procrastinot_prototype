@@ -26,7 +26,6 @@ class _SessionSetupViewState extends State<SessionSetupView> {
 
   // Yes, this is lazy. First time Flutter and in a hurry.
   void setSessionValues(Session updated) {
-    debugPrint('here');
     _session = updated;
     bool b = _session.isValid();
     if (isFormValid != b) setState(() {isFormValid = b;});

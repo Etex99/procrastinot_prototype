@@ -14,9 +14,10 @@ class SessionManager {
     _onBreak = true;
     session.elapsedTime += _stopwatch.elapsed;
     session.breaksTaken ++;
+    _stopwatch.stop();
     _stopwatch.reset();
     Timer(session.breakDuration, () {
-      _stopwatch.reset();
+      _stopwatch.start();
       _onBreak = false;
       breakOverCallback();
     });
@@ -28,6 +29,7 @@ class SessionManager {
   }
 
   bool isOnBreak() => _onBreak;
+  bool canTakeBreak() => session.breaksTaken < session.allowedBreaks;
 }
 
 class Session {
@@ -43,8 +45,6 @@ class Session {
   Session({this.targetDuration = Duration.zero, this.breakDuration = Duration.zero, this.allowedBreaks = 0, this.tasks}) {
     tasks ??= ['', '', ''];
   }
-
-  bool canTakeBreak() => breaksTaken < allowedBreaks;
 
   // All but breaks are mandatory.
   bool isValid() {

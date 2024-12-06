@@ -12,26 +12,21 @@ class SessionView extends StatefulWidget {
 }
 
 class _SessionViewState extends State<SessionView> {
-  late final SessionManager sessionManager;
+  SessionManager? sessionManager;
   final List<bool> _taskDone = [false, false, false];
-
-  markTaskDone(int index) {
-    setState(() {
-      _taskDone[index] = true;
-    });
-  }
 
   @override
   void didChangeDependencies() {
-    SessionViewArgs args =
+    if (sessionManager == null) {
+      SessionViewArgs args =
         ModalRoute.of(context)!.settings.arguments as SessionViewArgs;
-    sessionManager = SessionManager(session: args.session);
+      sessionManager = SessionManager(session: args.session);
+    }
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Bottom bar
     Container bottomBar = Container(
       height: 100,
       color: MyTheme.BACKGROUND_COLOR,
@@ -52,66 +47,83 @@ class _SessionViewState extends State<SessionView> {
       ),
     );
 
-    // construct list of tasks
-    List<Widget> tasks = [];
-    for (var i = 0; i < 3; i++) {
-      if (_taskDone[i] == false) {
-        tasks.add(
-          TaskListItem(taskLabel: sessionManager.session.tasks![i], onPressed: () => markTaskDone(i),)
-        );
-      } else {
-        tasks.add(
-          TaskListItem(taskLabel: sessionManager.session.tasks![i],)
-        );
-      }
-      if (i == 2) break;
-      tasks.add(const SizedBox(height: 8));
+    // enable / disable break button accordingly
+    Function()? breakButtonFunc;
+    if (sessionManager!.canTakeBreak()) {
+      breakButtonFunc = () {
+        sessionManager!.takeBreak(() => _returnFromBreak());
+        Navigator.pushNamed(context, '/break');
+      };
     }
+    IconButton takeBreakButton = IconButton(
+      icon: const Icon(Icons.coffee, size: 50,),
+      onPressed: breakButtonFunc,
+      color: MyTheme.ACCENT_COLOR,
+      disabledColor: MyTheme.PRIMARY_COLOR_LIGHT,
+    );
+
+    // construct body column widgets
+    List<Widget> bodyColumnChildren = [];
+    for (var i = 0; i < 3; i++) {
+      bodyColumnChildren.add(
+        TaskListItem(taskLabel: sessionManager!.session.tasks![i], onPressed: () => _taskDone[i] = true,));
+      if (i == 2) break;
+      bodyColumnChildren.add(const SizedBox(height: 8));
+    }
+    bodyColumnChildren.add(const SizedBox(height: 16));
+    bodyColumnChildren.add(Row(mainAxisSize: MainAxisSize.max, children: [takeBreakButton],));
+
+    SessionProgressBar progressBar = SessionProgressBar(session: sessionManager!.session);
 
     return SafeArea(
-        child: Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Flexible(
-              flex: 1,
-              child: Container(
-                color: MyTheme.BACKGROUND_COLOR,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        SessionProgressBar(session: sessionManager.session)
-                      ],
+      child: Scaffold(
+        body: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Flexible(
+                flex: 1,
+                child: Container(
+                  color: MyTheme.BACKGROUND_COLOR,
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          progressBar
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              )),
-          Flexible(
-              flex: 4,
-              child: Container(
-                color: MyTheme.FOREGROUND_COLOR,
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: tasks,
-                  ))
-              )),
-          bottomBar
-        ],
-      ),
+                )),
+            Flexible(
+                flex: 4,
+                child: Container(
+                  color: MyTheme.FOREGROUND_COLOR,
+                  child: Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.max,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: bodyColumnChildren,
+                    ))
+                )),
+            bottomBar
+          ],
+        ),
     ));
   }
 
   @override
   void dispose() {
-    sessionManager.endSession();
+    sessionManager!.endSession();
     super.dispose();
+  }
+  
+  void _returnFromBreak() {
+    Navigator.pop(context);
+    setState(() {/* Rebuild view to update progress bar */});
   }
 }
 

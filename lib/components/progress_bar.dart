@@ -15,18 +15,29 @@ class SessionProgressBar extends StatefulWidget {
 
 class _SessionProgressBarState extends State<SessionProgressBar>
     with TickerProviderStateMixin {
-  late final AnimationController controller;
+  AnimationController? controller;
 
   @override
   void initState() {
-    controller = AnimationController(
-        vsync: this, 
-        duration: widget.session.targetDuration,
-        value: widget.session.elapsedTime.inMilliseconds / widget.session.targetDuration.inMilliseconds);
-
-    controller.addListener(() => setState(() {}));
-    controller.animateTo(widget.session.targetDuration.inMilliseconds.toDouble());
+    controller = _startNewAnimation(widget.session);
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant SessionProgressBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    controller!.dispose();
+    controller = _startNewAnimation(widget.session);
+  }
+
+  AnimationController _startNewAnimation(Session s) {
+    AnimationController res = AnimationController(
+        vsync: this, 
+        duration: s.targetDuration,
+        value: s.elapsedTime.inMilliseconds / s.targetDuration.inMilliseconds);
+    res.addListener(() => setState(() {}));
+    res.animateTo(s.targetDuration.inMilliseconds.toDouble());
+    return res;
   }
 
   @override
@@ -64,7 +75,7 @@ class _SessionProgressBarState extends State<SessionProgressBar>
             children: [
               Flexible(
                 child: LinearProgressIndicator(
-                  value: controller.value,
+                  value: controller!.value,
                   backgroundColor: MyTheme.PRIMARY_COLOR_LIGHT,
                   color: MyTheme.PRIMARY_COLOR,
                   minHeight: 25,
@@ -80,7 +91,7 @@ class _SessionProgressBarState extends State<SessionProgressBar>
 
   @override
   void dispose() {
-    controller.dispose();
+    controller!.dispose();
     super.dispose();
   }
 }

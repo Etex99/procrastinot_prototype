@@ -1,20 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
 
-class TaskListItem extends StatelessWidget {
+class TaskListItem extends StatefulWidget {
   final String taskLabel;
-  final Function()? onPressed;
+  final Function onPressed;
 
-  const TaskListItem({super.key, required this.taskLabel, this.onPressed});
+  const TaskListItem({super.key, required this.taskLabel, required this.onPressed});
+
+  @override
+  State<TaskListItem> createState() => _TaskListItemState();
+}
+
+class _TaskListItemState extends State<TaskListItem> {
+  bool _done = false;
 
   @override
   Widget build(BuildContext context) {
 
     Widget label;
-    if (onPressed == null) {
-      label = MyBodyText(text: taskLabel, strikeThrough: true,);
+    if (!_done) {
+      label = MyBodyText(text: widget.taskLabel);
     } else {
-      label = MyBodyText(text: taskLabel);
+      label = MyBodyText(text: widget.taskLabel, strikeThrough: true,);
     }
 
     Row result = Row(
@@ -33,12 +40,16 @@ class TaskListItem extends StatelessWidget {
       ],
     );
 
-    if (onPressed != null) {
+    if (!_done) {
       result.children.add(const SizedBox(
         width: 8,
       ));
       result.children.add(IconButton(
-          onPressed: onPressed,
+          onPressed: () {
+            _done = true;
+            widget.onPressed();
+            _update();
+          },
           color: MyTheme.ACCENT_COLOR,
           disabledColor: MyTheme.PRIMARY_COLOR_LIGHT,
           icon: const Icon(
@@ -46,7 +57,8 @@ class TaskListItem extends StatelessWidget {
             size: 50,
           )));
     }
-
     return result;
   }
+
+  void _update() => setState((){});
 }
