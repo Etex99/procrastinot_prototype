@@ -52,7 +52,7 @@ class _SessionViewState extends State<SessionView> {
     if (sessionManager!.canTakeBreak()) {
       breakButtonFunc = () {
         sessionManager!.takeBreak(() => _returnFromBreak());
-        Navigator.pushNamed(context, '/break');
+        Navigator.pushNamed(context, '/break', arguments: BreakViewArgs(sessionManager!.session.breakDuration));
       };
     }
     IconButton takeBreakButton = IconButton(
