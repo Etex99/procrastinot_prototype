@@ -3,6 +3,7 @@ import 'package:procrastinot_prototype/components/progress_bar.dart';
 import 'package:procrastinot_prototype/components/task_list_item.dart';
 import 'package:procrastinot_prototype/data/session.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
+import 'package:procrastinot_prototype/views/all.dart';
 
 class SessionView extends StatefulWidget {
   const SessionView({super.key});
@@ -14,6 +15,7 @@ class SessionView extends StatefulWidget {
 class _SessionViewState extends State<SessionView> {
   SessionManager? sessionManager;
   final List<bool> _taskDone = [false, false, false];
+  int _doneCounter = 0;
 
   @override
   void didChangeDependencies() {
@@ -34,9 +36,8 @@ class _SessionViewState extends State<SessionView> {
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         children: [
-          // TODO: Exit button logic
           IconButton(
-              onPressed: () {},
+              onPressed: () => _exit(),
               icon: const Icon(
                 Icons.door_back_door,
                 size: 50,
@@ -66,7 +67,7 @@ class _SessionViewState extends State<SessionView> {
     List<Widget> bodyColumnChildren = [];
     for (var i = 0; i < 3; i++) {
       bodyColumnChildren.add(
-        TaskListItem(taskLabel: sessionManager!.session.tasks![i], onPressed: () => _taskDone[i] = true,));
+        TaskListItem(taskLabel: sessionManager!.session.tasks![i], onPressed: () {_taskDone[i] = true; _doneCounter++; }));
       if (i == 2) break;
       bodyColumnChildren.add(const SizedBox(height: 8));
     }
@@ -119,6 +120,11 @@ class _SessionViewState extends State<SessionView> {
   void dispose() {
     sessionManager!.endSession();
     super.dispose();
+  }
+
+  void _exit() {
+    SessionResultsArgs args = SessionResultsArgs(_doneCounter, sessionManager!.getTimeDifference());
+    Navigator.pushReplacementNamed(context, '/results', arguments: args);
   }
   
   void _returnFromBreak() {

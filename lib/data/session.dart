@@ -30,6 +30,10 @@ class SessionManager {
 
   bool isOnBreak() => _onBreak;
   bool canTakeBreak() => session.breaksTaken < session.allowedBreaks;
+  int getTimeDifference() {
+    session.elapsedTime += _stopwatch.elapsed;
+    return session.targetDuration.inMinutes - session.elapsedTime.inMinutes;
+  }
 }
 
 class Session {
