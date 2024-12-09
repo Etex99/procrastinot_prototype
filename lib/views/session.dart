@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/components/progress_bar.dart';
 import 'package:procrastinot_prototype/components/task_list_item.dart';
@@ -16,12 +17,13 @@ class _SessionViewState extends State<SessionView> {
   SessionManager? sessionManager;
   final List<bool> _taskDone = [false, false, false];
   int _doneCounter = 0;
+  Timer? _breakReturn;
 
   @override
   void didChangeDependencies() {
     if (sessionManager == null) {
       SessionViewArgs args =
-        ModalRoute.of(context)!.settings.arguments as SessionViewArgs;
+          ModalRoute.of(context)!.settings.arguments as SessionViewArgs;
       sessionManager = SessionManager(session: args.session);
     }
     super.didChangeDependencies();
@@ -29,90 +31,92 @@ class _SessionViewState extends State<SessionView> {
 
   @override
   Widget build(BuildContext context) {
-    Container bottomBar = Container(
-      height: 100,
+    SessionProgressBar progressBar =
+        SessionProgressBar(session: sessionManager!.session);
+    Widget topBar = Container(
       color: MyTheme.BACKGROUND_COLOR,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          IconButton(
-              onPressed: () => _exit(),
-              icon: const Icon(
-                Icons.door_back_door,
-                size: 50,
-                color: Colors.red,
-              )),
-          const SizedBox(width: 32,)
-        ],
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [progressBar],
+          ),
+        ),
       ),
     );
 
-    // enable / disable break button accordingly
     Function()? breakButtonFunc;
-    if (sessionManager!.canTakeBreak()) {
-      breakButtonFunc = () {
-        sessionManager!.takeBreak(() => _returnFromBreak());
-        Navigator.pushNamed(context, '/break', arguments: BreakViewArgs(sessionManager!.session.breakDuration));
-      };
-    }
+    if (sessionManager!.canTakeBreak()) breakButtonFunc = () => _takeBreak();
     IconButton takeBreakButton = IconButton(
-      icon: const Icon(Icons.coffee, size: 50,),
+      icon: const Icon(
+        Icons.coffee,
+        size: 50,
+      ),
       onPressed: breakButtonFunc,
       color: MyTheme.ACCENT_COLOR,
       disabledColor: MyTheme.PRIMARY_COLOR_LIGHT,
     );
 
-    // construct body column widgets
     List<Widget> bodyColumnChildren = [];
     for (var i = 0; i < 3; i++) {
-      bodyColumnChildren.add(
-        TaskListItem(taskLabel: sessionManager!.session.tasks![i], onPressed: () {_taskDone[i] = true; _doneCounter++; }));
+      bodyColumnChildren.add(TaskListItem(
+          taskLabel: sessionManager!.session.tasks![i],
+          onPressed: () {
+            _taskDone[i] = true;
+            _doneCounter++;
+          }));
       if (i == 2) break;
       bodyColumnChildren.add(const SizedBox(height: 8));
     }
     bodyColumnChildren.add(const SizedBox(height: 16));
-    bodyColumnChildren.add(Row(mainAxisSize: MainAxisSize.max, children: [takeBreakButton],));
+    bodyColumnChildren.add(Row(
+      mainAxisSize: MainAxisSize.max,
+      children: [takeBreakButton],
+    ));
 
-    SessionProgressBar progressBar = SessionProgressBar(session: sessionManager!.session);
+    Widget middleContent = Container(
+        color: MyTheme.FOREGROUND_COLOR,
+        child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: bodyColumnChildren,
+            )));
+
+    Widget exitButton = IconButton(
+        onPressed: () => _exit(),
+        icon: const Icon(
+          Icons.door_back_door,
+          size: 50,
+          color: Colors.red,
+        ));
+
+    Container bottomBar = Container(
+      height: 100,
+      color: MyTheme.BACKGROUND_COLOR,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.max,
+          children: [exitButton],
+        ),
+      ),
+    );
 
     return SafeArea(
-      child: Scaffold(
-        body: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Flexible(
-                flex: 1,
-                child: Container(
-                  color: MyTheme.BACKGROUND_COLOR,
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          progressBar
-                        ],
-                      ),
-                    ),
-                  ),
-                )),
-            Flexible(
-                flex: 4,
-                child: Container(
-                  color: MyTheme.FOREGROUND_COLOR,
-                  child: Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: bodyColumnChildren,
-                    ))
-                )),
-            bottomBar
-          ],
-        ),
+        child: Scaffold(
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(flex: 1, child: topBar),
+          Flexible(flex: 4, child: middleContent),
+          bottomBar
+        ],
+      ),
     ));
   }
 
@@ -123,11 +127,21 @@ class _SessionViewState extends State<SessionView> {
   }
 
   void _exit() {
-    SessionResultsArgs args = SessionResultsArgs(_doneCounter, sessionManager!.getTimeDifference());
+    SessionResultsArgs args =
+        SessionResultsArgs(_doneCounter, sessionManager!.getTimeDifference());
     Navigator.pushReplacementNamed(context, '/results', arguments: args);
   }
-  
+
+  void _takeBreak() {
+    _breakReturn = Timer(sessionManager!.session.breakDuration, () => _returnFromBreak());
+    sessionManager!.beginBreak();
+    Navigator.pushNamed(context, '/break',
+        arguments: BreakViewArgs(sessionManager!.session.breakDuration));
+  }
+
   void _returnFromBreak() {
+    if (_breakReturn!.isActive) _breakReturn!.cancel();
+    sessionManager!.endBreak();
     Navigator.pop(context);
     setState(() {/* Rebuild view to update progress bar */});
   }

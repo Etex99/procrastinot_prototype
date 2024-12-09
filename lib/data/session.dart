@@ -10,17 +10,17 @@ class SessionManager {
     _stopwatch.start();
   }
 
-  void takeBreak(Function breakOverCallback) {
+  void beginBreak() {
     _onBreak = true;
     session.elapsedTime += _stopwatch.elapsed;
     session.breaksTaken ++;
     _stopwatch.stop();
     _stopwatch.reset();
-    Timer(session.breakDuration, () {
-      _stopwatch.start();
-      _onBreak = false;
-      breakOverCallback();
-    });
+  }
+
+  void endBreak() {
+    _stopwatch.start();
+    _onBreak = false;
   }
 
   void endSession() {
