@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MyTheme {
-  static const Color BACKGROUND_COLOR = Color.fromARGB(255, 255, 231, 179);
-  static const Color FOREGROUND_COLOR = Color.fromARGB(255, 255, 242, 214);
-  static const Color PRIMARY_COLOR = Color.fromARGB(255, 140, 10, 40);
-  static const Color PRIMARY_COLOR_LIGHT = Color.fromARGB(255, 240, 163, 181);
-  static const Color ACCENT_COLOR = Color.fromARGB(255, 33, 62, 24);
-  static const Color ACCENT_COLOR_LIGHT = Color.fromARGB(255, 159, 206, 145);
+  static const Color BACKGROUND_COLOR = Color.fromARGB(255, 201, 204, 255);
+  static const Color FOREGROUND_COLOR = Color.fromARGB(255, 222, 223, 255);
+  static const Color PRIMARY_COLOR = Color.fromARGB(255, 133, 35, 58);
+  static const Color PRIMARY_COLOR_LIGHT = Color.fromARGB(255, 213, 138, 155);
+  static const Color ACCENT_COLOR = Color.fromARGB(255, 43, 80, 31);
+  static const Color ACCENT_COLOR_LIGHT = Color.fromARGB(255, 163, 195, 155);
 
   static const TextStyle TITLE_TEXT_STYLE = TextStyle(
       color: ACCENT_COLOR,
