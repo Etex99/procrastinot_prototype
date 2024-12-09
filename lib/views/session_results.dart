@@ -13,9 +13,9 @@ class SessionResults extends StatelessWidget {
 
     String titleText = 'Session ended roughly on time.';
     if (timeDifferenceInMinutes <= -15) {
-      titleText = 'Session ended early.';
-    } else if (timeDifferenceInMinutes >= 15) {
       titleText = 'Session ended with overtime.';
+    } else if (timeDifferenceInMinutes >= 15) {
+      titleText = 'Session ended early.';
     }
 
     Widget topBar = Container(
