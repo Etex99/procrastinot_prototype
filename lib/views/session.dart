@@ -40,9 +40,7 @@ class _SessionViewState extends State<SessionView> {
       child: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [progressBar],
-          ),
+          child: progressBar
         ),
       ),
     );
@@ -98,13 +96,11 @@ class _SessionViewState extends State<SessionView> {
     Container bottomBar = Container(
       height: 100,
       color: MyTheme.BACKGROUND_COLOR,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.max,
-          children: [exitButton],
-        ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [exitButton, const SizedBox(width: 8.0,)],
       ),
     );
 
@@ -142,7 +138,6 @@ class _SessionViewState extends State<SessionView> {
   }
 
   void _returnFromBreak() {
-    debugPrint("_returnFromBreak called!");
     if (_breakReturn!.isActive) _breakReturn!.cancel();
     sessionManager!.endBreak();
     Navigator.pop(context);

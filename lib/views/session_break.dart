@@ -11,14 +11,12 @@ class BreakView extends StatelessWidget {
     BreakViewArgs args = ModalRoute.of(context)!.settings.arguments as BreakViewArgs;
 
     Container topBar = Container(
-          height: 100,
           color: MyTheme.BACKGROUND_COLOR,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [BreakProgressBar(duration: args.d,)]),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: BreakProgressBar(duration: args.d,),
+            ),
           ),
         );
 
@@ -45,9 +43,10 @@ class BreakView extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(width: 32,),
-          returnButton
+          returnButton,
+          const SizedBox(width: 8.0,)
         ],
       )
     );
@@ -58,9 +57,8 @@ class BreakView extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        topBar,
-        Expanded(
-            child: middleContent,),
+        Flexible(flex: 1, child: topBar),
+        Flexible(flex: 4, child: middleContent),
         bottomBar
       ],
     )));

@@ -51,30 +51,28 @@ class _ProgressBarState extends State<ProgressBar> with TickerProviderStateMixin
       elapsedLabel = "Overtime";
     }
 
-    return Expanded(
-      child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            widget.iconRow,
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Flexible(
-                  child: progressBar
-                ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                MyBodyText(text: elapsedLabel)
-              ],
-            )
-          ],
-        ),
-    );
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          widget.iconRow,
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Flexible(
+                child: progressBar
+              ),
+            ],
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MyBodyText(text: elapsedLabel)
+            ],
+          )
+        ],
+      );
   }
 
   @override
