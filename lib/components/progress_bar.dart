@@ -136,60 +136,23 @@ class SessionProgressBar extends StatelessWidget {
   }
 }
 
-// TODO: continue refactor: use ProgressBar.
-class BreakProgressBar extends StatefulWidget {
-  const BreakProgressBar({super.key});
-
-  @override
-  State<BreakProgressBar> createState() => _BreakProgressBarState();
-}
-
-class _BreakProgressBarState extends State<BreakProgressBar> with TickerProviderStateMixin {
-  Duration? _duration;
-  AnimationController? controller;
-
-  @override
-  void didChangeDependencies() {
-    if (_duration == null) {
-      BreakViewArgs args =
-        ModalRoute.of(context)!.settings.arguments as BreakViewArgs;
-      _duration = args.d;
-      controller = AnimationController(
-        vsync: this, 
-        duration: _duration,
-        value: 0);
-      controller!.addListener(() => setState(() {}));
-      controller!.animateTo(1);
-    }
-    super.didChangeDependencies();
-  }
+class BreakProgressBar extends StatelessWidget {
+  final Duration duration;
+  const BreakProgressBar({super.key, required this.duration});
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    Row iconRow = const Row(
       mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Flexible(
-          child: LinearProgressIndicator(
-            value: controller!.value,
-            backgroundColor: MyTheme.PRIMARY_COLOR_LIGHT,
-            color: MyTheme.PRIMARY_COLOR,
-            minHeight: 25,
-          ),
-        ),
+        Icon(
+          Icons.book,
+          color: MyTheme.PRIMARY_COLOR,
+          size: 25,
+        )
       ],
     );
+    return ProgressBar(targetDuration: duration, elapsedTime: Duration.zero, iconRow: iconRow);
   }
-
-  @override
-  void dispose() {
-    controller!.dispose();
-    super.dispose();
-  }
-}
-
-class BreakViewArgs {
-  final Duration d;
-  BreakViewArgs(this.d);
 }

@@ -4,7 +4,9 @@ import 'package:procrastinot_prototype/components/progress_bar.dart';
 import 'package:procrastinot_prototype/components/task_list_item.dart';
 import 'package:procrastinot_prototype/data/session.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
-import 'package:procrastinot_prototype/views/all.dart';
+import 'package:procrastinot_prototype/views/session_break.dart';
+import 'package:procrastinot_prototype/views/session_results.dart';
+
 
 class SessionView extends StatefulWidget {
   const SessionView({super.key});
@@ -21,12 +23,12 @@ class _SessionViewState extends State<SessionView> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (sessionManager == null) {
       SessionViewArgs args =
           ModalRoute.of(context)!.settings.arguments as SessionViewArgs;
       sessionManager = SessionManager(session: args.session);
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -136,10 +138,11 @@ class _SessionViewState extends State<SessionView> {
     _breakReturn = Timer(sessionManager!.session.breakDuration, () => _returnFromBreak());
     sessionManager!.beginBreak();
     Navigator.pushNamed(context, '/break',
-        arguments: BreakViewArgs(sessionManager!.session.breakDuration));
+        arguments: BreakViewArgs(sessionManager!.session.breakDuration, () => _returnFromBreak()));
   }
 
   void _returnFromBreak() {
+    debugPrint("_returnFromBreak called!");
     if (_breakReturn!.isActive) _breakReturn!.cancel();
     sessionManager!.endBreak();
     Navigator.pop(context);

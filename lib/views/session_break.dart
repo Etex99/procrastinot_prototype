@@ -7,25 +7,22 @@ class BreakView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            body: Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
+
+    BreakViewArgs args = ModalRoute.of(context)!.settings.arguments as BreakViewArgs;
+
+    Container topBar = Container(
           height: 100,
           color: MyTheme.BACKGROUND_COLOR,
-          child: const Padding(
-            padding: EdgeInsets.all(8.0),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [BreakProgressBar()]),
+              children: [BreakProgressBar(duration: args.d,)]),
           ),
-        ),
-        Expanded(
-            child: Container(
+        );
+
+    Container middleContent = Container(
                 color: MyTheme.FOREGROUND_COLOR,
                 child: const Center(
                   child: Icon(
@@ -33,8 +30,45 @@ class BreakView extends StatelessWidget {
                     color: MyTheme.PRIMARY_COLOR,
                     size: 128,
                   ),
-                )))
+                ));
+
+    IconButton returnButton = IconButton(
+        onPressed: args.returnCallback,
+        icon: const Icon(
+          Icons.keyboard_return,
+          size: 50,
+          color: Colors.red,
+        ));
+    Container bottomBar = Container(
+      height: 100,
+      color: MyTheme.BACKGROUND_COLOR,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          const SizedBox(width: 32,),
+          returnButton
+        ],
+      )
+    );
+
+    return SafeArea(
+        child: Scaffold(
+            body: Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        topBar,
+        Expanded(
+            child: middleContent,),
+        bottomBar
       ],
     )));
   }
+}
+
+class BreakViewArgs {
+  final Duration d;
+  final Function()? returnCallback;
+  BreakViewArgs(this.d, this.returnCallback);
 }
