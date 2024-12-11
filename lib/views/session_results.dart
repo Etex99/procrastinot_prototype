@@ -9,7 +9,6 @@ class SessionResults extends StatelessWidget {
     SessionResultsArgs args = ModalRoute.of(context)!.settings.arguments as SessionResultsArgs;
     int completedTasks = args.completedTasks;
     int timeDifferenceInMinutes = args.timeDifferenceInMinutes;
-    debugPrint('$completedTasks, $timeDifferenceInMinutes');
 
     String titleText = 'Session ended roughly on time.';
     if (timeDifferenceInMinutes <= -15) {

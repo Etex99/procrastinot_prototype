@@ -8,6 +8,12 @@ class MyTheme {
   static const Color ACCENT_COLOR = Color.fromARGB(255, 43, 80, 31);
   static const Color ACCENT_COLOR_LIGHT = Color.fromARGB(255, 163, 195, 155);
 
+  static const Icon IDEA = Icon(
+      Icons.lightbulb,
+      color: MyTheme.PRIMARY_COLOR,
+      size: 50,
+  );
+
   static const TextStyle TITLE_TEXT_STYLE = TextStyle(
       color: ACCENT_COLOR,
       height: 1.0,
