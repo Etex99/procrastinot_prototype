@@ -13,6 +13,10 @@ class MyTheme {
       color: MyTheme.PRIMARY_COLOR,
       size: 50,
   );
+  static const Icon DOOR = Icon(
+    Icons.door_back_door,
+    size: 50
+  );
 
   static const TextStyle TITLE_TEXT_STYLE = TextStyle(
       color: ACCENT_COLOR,
@@ -24,7 +28,7 @@ class MyTheme {
       color: PRIMARY_COLOR,
       height: 1.0,
       fontSize: 24,
-      fontStyle: FontStyle.italic);
+      fontStyle: FontStyle.italic,);
 
   static const TextStyle BODY_TEXT_STYLE = TextStyle(
       color: PRIMARY_COLOR,
@@ -81,7 +85,7 @@ class MySubtitle extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Text(text,
-          textAlign: TextAlign.start, style: MyTheme.SUBTITLE_TEXT_STYLE),
+          textAlign: TextAlign.center, style: MyTheme.SUBTITLE_TEXT_STYLE),
     );
   }
 }
@@ -132,7 +136,7 @@ class MyElevatedButton extends StatelessWidget {
             foregroundColor: MyTheme.ACCENT_COLOR,
             textStyle: MyTheme.BODY_TEXT_STYLE,
             padding: const EdgeInsets.all(8),
-            fixedSize: const Size(200.0, 100.0),
+            fixedSize: const Size(150.0, 75.0),
             shape: const RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(16.0)))),
         onPressed: () => onPressed(),

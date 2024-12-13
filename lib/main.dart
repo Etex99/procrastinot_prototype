@@ -19,7 +19,8 @@ class MainApp extends StatelessWidget {
           '/session': (context) => const SessionView(),
           '/help': (context) => const SetupHelp(),
           '/break': (context) => const BreakView(),
-          '/results': (context) => const SessionResults()
+          '/results': (context) => const SessionResults(),
+          '/analysis': (context) => const SessionAnalysis()
         }
     );
   }

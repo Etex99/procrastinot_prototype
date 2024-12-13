@@ -73,8 +73,7 @@ class SessionResults extends StatelessWidget {
     );
 
     Widget inspectButton = IconButton(
-      // TODO: push analysis view.
-      onPressed: () {},
+      onPressed: () => Navigator.pushReplacementNamed(context, "/analysis"),
       icon: const Icon(
         Icons.psychology,
         color: MyTheme.ACCENT_COLOR,
