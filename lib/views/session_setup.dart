@@ -65,8 +65,9 @@ class _SessionSetupViewState extends State<SessionSetupView> {
                             const Spacer(flex: 1),
                             IconButton(
                                 onPressed: () {
-                                  Navigator.pushReplacementNamed(
+                                  Navigator.pushNamedAndRemoveUntil(
                                       context, '/session',
+                                      (Route<dynamic> route) => false,
                                       arguments: SessionViewArgs(_session));
                                 },
                                 icon: const Icon(
