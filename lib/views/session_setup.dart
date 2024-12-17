@@ -4,7 +4,6 @@ import 'package:procrastinot_prototype/components/below_keyboard.dart';
 import 'package:procrastinot_prototype/components/setup_form.dart';
 import 'package:procrastinot_prototype/data/session.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
-import 'package:procrastinot_prototype/views/all.dart';
 
 class SessionSetupView extends StatefulWidget {
   const SessionSetupView({super.key});
