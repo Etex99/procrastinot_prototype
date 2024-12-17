@@ -1,10 +1,14 @@
 class SessionManager {
-  final Session session;
+  static final SessionManager instance = SessionManager._internal();
+  factory SessionManager() => instance;
+  SessionManager._internal();
+  
+  Session session = Session();
 
   final Stopwatch _stopwatch = Stopwatch();
   bool _onBreak = false;
 
-  SessionManager({required this.session}) {
+  void startSession() {
     _stopwatch.start();
   }
 
@@ -23,6 +27,7 @@ class SessionManager {
 
   void endSession() {
     _stopwatch.stop();
+    _stopwatch.reset();
     if (!_onBreak) session.elapsedTime += _stopwatch.elapsed;
   }
 

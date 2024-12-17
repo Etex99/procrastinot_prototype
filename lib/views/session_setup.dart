@@ -65,10 +65,10 @@ class _SessionSetupViewState extends State<SessionSetupView> {
                             const Spacer(flex: 1),
                             IconButton(
                                 onPressed: () {
+                                  SessionManager.instance.session = _session;
                                   Navigator.pushNamedAndRemoveUntil(
                                       context, '/session',
-                                      (Route<dynamic> route) => false,
-                                      arguments: SessionViewArgs(_session));
+                                      (Route<dynamic> route) => false);
                                 },
                                 icon: const Icon(
                                   Icons.check_box,

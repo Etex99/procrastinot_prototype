@@ -16,25 +16,20 @@ class SessionView extends StatefulWidget {
 }
 
 class _SessionViewState extends State<SessionView> {
-  SessionManager? sessionManager;
   final List<bool> _taskDone = [false, false, false];
   int _doneCounter = 0;
   Timer? _breakReturn;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (sessionManager == null) {
-      SessionViewArgs args =
-          ModalRoute.of(context)!.settings.arguments as SessionViewArgs;
-      sessionManager = SessionManager(session: args.session);
-    }
+  void initState() {
+    super.initState();
+    SessionManager.instance.startSession();
   }
 
   @override
   Widget build(BuildContext context) {
     SessionProgressBar progressBar =
-        SessionProgressBar(session: sessionManager!.session);
+        SessionProgressBar(session: SessionManager.instance.session);
     Widget topBar = Container(
       color: MyTheme.BACKGROUND_COLOR,
       child: Center(
@@ -46,7 +41,7 @@ class _SessionViewState extends State<SessionView> {
     );
 
     Function()? breakButtonFunc;
-    if (sessionManager!.canTakeBreak()) breakButtonFunc = () => _takeBreak();
+    if (SessionManager.instance.canTakeBreak()) breakButtonFunc = () => _takeBreak();
     IconButton takeBreakButton = IconButton(
       icon: const Icon(
         Icons.coffee,
@@ -60,7 +55,7 @@ class _SessionViewState extends State<SessionView> {
     List<Widget> bodyColumnChildren = [];
     for (var i = 0; i < 3; i++) {
       bodyColumnChildren.add(TaskListItem(
-          taskLabel: sessionManager!.session.tasks![i],
+          taskLabel: SessionManager.instance.session.tasks![i],
           onPressed: () {
             _taskDone[i] = true;
             _doneCounter++;
@@ -120,33 +115,27 @@ class _SessionViewState extends State<SessionView> {
 
   @override
   void dispose() {
-    sessionManager!.endSession();
+    SessionManager.instance.endSession();
     super.dispose();
   }
 
   void _exit() {
     SessionResultsArgs args =
-        SessionResultsArgs(_doneCounter, sessionManager!.getTimeDifference());
+        SessionResultsArgs(_doneCounter, SessionManager.instance.getTimeDifference());
     Navigator.pushReplacementNamed(context, '/results', arguments: args);
   }
 
   void _takeBreak() {
-    _breakReturn = Timer(sessionManager!.session.breakDuration, () => _returnFromBreak());
-    sessionManager!.beginBreak();
+    _breakReturn = Timer(SessionManager.instance.session.breakDuration, () => _returnFromBreak());
+    SessionManager.instance.beginBreak();
     Navigator.pushNamed(context, '/break',
-        arguments: BreakViewArgs(sessionManager!.session.breakDuration, () => _returnFromBreak()));
+        arguments: BreakViewArgs(SessionManager.instance.session.breakDuration, () => _returnFromBreak()));
   }
 
   void _returnFromBreak() {
     if (_breakReturn!.isActive) _breakReturn!.cancel();
-    sessionManager!.endBreak();
+    SessionManager.instance.endBreak();
     Navigator.pop(context);
     setState(() {/* Rebuild view to update progress bar */});
   }
-}
-
-class SessionViewArgs {
-  final Session session;
-
-  SessionViewArgs(this.session);
 }
