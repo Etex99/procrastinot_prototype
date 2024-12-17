@@ -29,7 +29,7 @@ class SessionResults extends StatelessWidget {
     switch (completedTasks) {
       case 0:
         reactionEmoji = Icons.sentiment_neutral;
-        praise = "All days can\'t be good days.";
+        praise = "All days can't be good days.";
         break;
       case 1:
         reactionEmoji = Icons.sentiment_satisfied;
