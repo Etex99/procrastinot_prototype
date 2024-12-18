@@ -16,20 +16,26 @@ class SessionView extends StatefulWidget {
 }
 
 class _SessionViewState extends State<SessionView> {
-  final List<bool> _taskDone = [false, false, false];
-  int _doneCounter = 0;
   Timer? _breakReturn;
+  late AppLifecycleListener _listener;
 
   @override
   void initState() {
     super.initState();
     SessionManager.instance.startSession();
+
+    _listener = AppLifecycleListener(
+      onPause: () => _handleAppPause(),
+      onRestart: () => _handleAppRestart(),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    SessionManager s = SessionManager();
+
     SessionProgressBar progressBar =
-        SessionProgressBar(session: SessionManager.instance.session);
+        SessionProgressBar(session: s.session);
     Widget topBar = Container(
       color: MyTheme.BACKGROUND_COLOR,
       child: Center(
@@ -41,7 +47,7 @@ class _SessionViewState extends State<SessionView> {
     );
 
     Function()? breakButtonFunc;
-    if (SessionManager.instance.canTakeBreak()) breakButtonFunc = () => _takeBreak();
+    if (s.canTakeBreak()) breakButtonFunc = () => _takeBreak();
     IconButton takeBreakButton = IconButton(
       icon: const Icon(
         Icons.coffee,
@@ -55,10 +61,10 @@ class _SessionViewState extends State<SessionView> {
     List<Widget> bodyColumnChildren = [];
     for (var i = 0; i < 3; i++) {
       bodyColumnChildren.add(TaskListItem(
-          taskLabel: SessionManager.instance.session.tasks![i],
+          taskLabel: s.session.tasks![i],
+          done: s.session.taskSuccess![i],
           onPressed: () {
-            _taskDone[i] = true;
-            _doneCounter++;
+            s.session.taskSuccess![i] = true;
           }));
       if (i == 2) break;
       bodyColumnChildren.add(const SizedBox(height: 8));
@@ -115,13 +121,20 @@ class _SessionViewState extends State<SessionView> {
 
   @override
   void dispose() {
-    SessionManager.instance.endSession();
+    SessionManager.instance.stopSession();
+    _listener.dispose();
     super.dispose();
   }
 
   void _exit() {
+    SessionManager s = SessionManager();
+    int doneCounter = 0;
+    for (var i = 0; i < s.session.taskSuccess!.length; i++) {
+      if (s.session.taskSuccess![i] == true) doneCounter++;
+    }
+
     SessionResultsArgs args =
-        SessionResultsArgs(_doneCounter, SessionManager.instance.getTimeDifference());
+        SessionResultsArgs(doneCounter, s.getTimeDifference());
     Navigator.pushReplacementNamed(context, '/results', arguments: args);
   }
 
@@ -136,6 +149,21 @@ class _SessionViewState extends State<SessionView> {
     if (_breakReturn!.isActive) _breakReturn!.cancel();
     SessionManager.instance.endBreak();
     Navigator.pop(context);
+    setState(() {/* Rebuild view to update progress bar */});
+  }
+
+  Future<void> _handleAppPause() async {
+    debugPrint("App paused!");
+    SessionManager s = SessionManager();
+    await s.pauseSession();
+    debugPrint(s.session.toString());
+  }
+
+  Future<void> _handleAppRestart() async {
+    debugPrint("App restarted!");
+    SessionManager s = SessionManager();
+    await s.resumeSession();
+    debugPrint(s.session.toString());
     setState(() {/* Rebuild view to update progress bar */});
   }
 }

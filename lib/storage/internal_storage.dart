@@ -1,4 +1,8 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:procrastinot_prototype/data/session.dart';
 import 'package:procrastinot_prototype/util/format.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,8 +13,32 @@ class InternalStorageHandler {
   static const String DEFAULT_STUDY_DURATION = 'DEFAULT_STUDY_DURATION';
   static const String DEFAULT_BREAK_DURATION = 'DEFAULT_BREAK_DURATION';
   static const String DEFAULT_NUMBER_OF_BREAKS = 'DEFAULT_NUMBER_OF_BREAKS';
+  static const String SESSION_SAVE_FILE = "/session.txt";
+  static const String RESUME_SESSION = 'RESUME_SESSION';
+  static const String PAUSED_TIMESTAMP = 'PAUSED_TIMESTAMP';
 
   static Map<String, dynamic> tempSettingsFormValues = {};
+
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+  Future<File> get _sessionSaveFile async {
+    final path = await _localPath;
+    return File('$path$SESSION_SAVE_FILE');
+  }
+
+  Future<void> saveSession(Session session) async {
+    File file = await _sessionSaveFile;
+    String jsonStr = jsonEncode(session);
+    await file.writeAsString(jsonStr);
+  }
+  Future<Session> loadSession() async {
+    File file = await _sessionSaveFile;
+    if (!(await file.exists())) return Session();
+    String jsonStr = await file.readAsString();
+    return Session.fromJson(jsonDecode(jsonStr) as Map<String, dynamic>);
+  }
 
   Future<void> saveSettings() async {
     if (tempSettingsFormValues.containsKey(SEND_NOTIFICATIONS)) {
@@ -33,6 +61,33 @@ class InternalStorageHandler {
     }
 
     tempSettingsFormValues.clear();
+  }
+
+  Future<void> setResumeSession(bool resumeSession) async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    await sp.setBool(RESUME_SESSION, resumeSession);
+  }
+
+  Future<bool> getResumeSession() async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    bool result = false; // Default value
+    if (await sp.containsKey(RESUME_SESSION)) result = await sp.getBool(RESUME_SESSION) as bool;
+    return result;
+  }
+
+  Future<void> setPausedTimestamp(DateTime timestamp) async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    await sp.setString(PAUSED_TIMESTAMP, timestamp.toString());
+  }
+  Future<DateTime> getPausedTimestamp() async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    DateTime result = DateTime.timestamp(); // Default value
+    String timestampStr;
+    if (await sp.containsKey(PAUSED_TIMESTAMP)) {
+      timestampStr = await sp.getString(PAUSED_TIMESTAMP) as String;
+      result = DateTime.parse(timestampStr);
+    }
+    return result;
   }
 
   Future<void> setSendNotifications(bool sendNotifications) async {

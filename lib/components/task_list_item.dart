@@ -3,9 +3,10 @@ import 'package:procrastinot_prototype/resources/theme.dart';
 
 class TaskListItem extends StatefulWidget {
   final String taskLabel;
+  final bool done;
   final Function onPressed;
 
-  const TaskListItem({super.key, required this.taskLabel, required this.onPressed});
+  const TaskListItem({super.key, required this.taskLabel, required this.done, required this.onPressed});
 
   @override
   State<TaskListItem> createState() => _TaskListItemState();
@@ -13,6 +14,12 @@ class TaskListItem extends StatefulWidget {
 
 class _TaskListItemState extends State<TaskListItem> {
   bool _done = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _done = widget.done;
+  }
 
   @override
   Widget build(BuildContext context) {
