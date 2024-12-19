@@ -22,17 +22,28 @@ class _SessionViewState extends State<SessionView> {
   @override
   void initState() {
     super.initState();
-    SessionManager.instance.startSession();
-
+   
     _listener = AppLifecycleListener(
       onPause: () => _handleAppPause(),
       onRestart: () => _handleAppRestart(),
     );
+    
+    SessionManager s = SessionManager();
+    
+    s.startSession();
+
+    if (s.isOnBreak()) {
+      _takeBreak();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     SessionManager s = SessionManager();
+
+    if (s.isOnBreak()) {
+      return BreakView(totalDuration: s.session.breakDuration, elapsedDuration: s.session.elapsedBreakTime, returnCallback: () => _returnFromBreak(),);
+    }
 
     SessionProgressBar progressBar =
         SessionProgressBar(session: s.session);
@@ -123,6 +134,7 @@ class _SessionViewState extends State<SessionView> {
   void dispose() {
     SessionManager.instance.stopSession();
     _listener.dispose();
+    if (_breakReturn != null) _breakReturn!.cancel();
     super.dispose();
   }
 
@@ -139,22 +151,23 @@ class _SessionViewState extends State<SessionView> {
   }
 
   void _takeBreak() {
-    _breakReturn = Timer(SessionManager.instance.session.breakDuration, () => _returnFromBreak());
-    SessionManager.instance.beginBreak();
-    Navigator.pushNamed(context, '/break',
-        arguments: BreakViewArgs(SessionManager.instance.session.breakDuration, () => _returnFromBreak()));
+    SessionManager s = SessionManager();
+    _breakReturn = Timer((s.session.breakDuration - s.session.elapsedBreakTime), () => _returnFromBreak());
+    if (!s.isOnBreak()) s.beginBreak(); // This if clause prevents unexpected behaviour when a break is resumed after app was paused
+    setState(() {/* Rebuild view to show break content */},);
   }
 
   void _returnFromBreak() {
-    if (_breakReturn!.isActive) _breakReturn!.cancel();
+    if (_breakReturn != null) _breakReturn!.cancel();
     SessionManager.instance.endBreak();
-    Navigator.pop(context);
-    setState(() {/* Rebuild view to update progress bar */});
+    setState(() {/* Rebuild view to show session content */});
   }
 
   Future<void> _handleAppPause() async {
     debugPrint("App paused!");
     SessionManager s = SessionManager();
+
+    if (_breakReturn != null) _breakReturn!.cancel();
     await s.pauseSession();
     debugPrint(s.session.toString());
   }
@@ -162,8 +175,15 @@ class _SessionViewState extends State<SessionView> {
   Future<void> _handleAppRestart() async {
     debugPrint("App restarted!");
     SessionManager s = SessionManager();
-    await s.resumeSession();
+    await s.restoreSession();
     debugPrint(s.session.toString());
+
+    s.startSession();
+
+    if (s.isOnBreak()) {
+      _takeBreak();
+    }
+
     setState(() {/* Rebuild view to update progress bar */});
   }
 }

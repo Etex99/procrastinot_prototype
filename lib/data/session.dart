@@ -17,17 +17,21 @@ class SessionManager {
     session.onBreak = true;
     session.elapsedTime += _stopwatch.elapsed;
     session.breaksTaken ++;
-    _stopwatch.stop();
     _stopwatch.reset();
   }
 
   void endBreak() {
-    _stopwatch.start();
     session.onBreak = false;
+    session.elapsedBreakTime = Duration.zero;
+    _stopwatch.reset();
   }
 
   void stopSession() {
-    session.elapsedTime += _stopwatch.elapsed;
+    if (isOnBreak()) {
+      session.elapsedBreakTime += _stopwatch.elapsed;
+    } else {
+      session.elapsedTime += _stopwatch.elapsed;
+    }
     _stopwatch.stop();
     _stopwatch.reset();
   }
@@ -39,7 +43,6 @@ class SessionManager {
     return session.targetDuration.inMinutes - session.elapsedTime.inMinutes;
   }
 
-  // used when app is paused or killed
   Future<void> pauseSession() async {
     InternalStorageHandler ish = InternalStorageHandler();
     await ish.setResumeSession(true);
@@ -48,28 +51,31 @@ class SessionManager {
     stopSession();
     await ish.saveSession(session);
   }
-  Future<bool> resumeSession() async {
+
+  Future<bool> restoreSession() async {
     InternalStorageHandler ish = InternalStorageHandler();
     await ish.setResumeSession(false);
     
     session = await ish.loadSession();
-
-    // TODO: perform correct actions if app was paused during break...
-    // how much actual worktime elapsed?
-    
     DateTime paused = await ish.getPausedTimestamp();
     DateTime now = DateTime.timestamp();
     Duration passedTime = now.difference(paused);
-    session.elapsedTime += passedTime;
 
-    // for now subtract entire break...
-    if (session.onBreak == true) {
-      session.elapsedTime -= session.breakDuration;
-      if (session.elapsedTime.isNegative) session.elapsedTime = Duration.zero;
-      session.onBreak = false;
+
+    if (isOnBreak()) {
+      Duration passedMinusBreak = passedTime - (session.breakDuration - session.elapsedBreakTime);
+      if (passedMinusBreak.isNegative) {
+        //break is still ongoing
+        session.elapsedBreakTime += passedTime;
+      } else {
+        //break ended during pause
+        endBreak();
+        session.elapsedTime += passedMinusBreak;
+      }
+    } else {
+      session.elapsedTime += passedTime;
     }
 
-    startSession();
     return true;
   }
 }
@@ -84,6 +90,7 @@ class Session {
 
   bool onBreak;
   Duration elapsedTime = const Duration();
+  Duration elapsedBreakTime = const Duration();
   int breaksTaken = 0;
 
   Session({this.targetDuration = Duration.zero, this.breakDuration = Duration.zero, this.allowedBreaks = 0, this.tasks, this.taskSuccess, this.onBreak = false}) {
@@ -99,6 +106,7 @@ class Session {
     taskSuccess = (json["task_success"] as List<dynamic>).cast<bool>(),
     onBreak = json["on_break"] as bool,
     elapsedTime = Duration(seconds: json["elapsed_time"] as int),
+    elapsedBreakTime = Duration(seconds: json["elapsed_break_time"] as int),
     breaksTaken = json["breaks_taken"] as int;
 
   Map<String, dynamic> toJson() => {
@@ -109,6 +117,7 @@ class Session {
     "task_success": taskSuccess,
     "on_break": onBreak,
     "elapsed_time": elapsedTime.inSeconds,
+    "elapsed_break_time": elapsedBreakTime.inSeconds,
     "breaks_taken": breaksTaken
   };
 
@@ -130,6 +139,7 @@ class Session {
     str += 'task_success: $taskSuccess, ';
     str += 'on_break: $onBreak, ';
     str += 'elapsed_time: $elapsedTime, ';
+    str += 'elapsed_break_time: $elapsedBreakTime, ';
     str += 'breaks_taken: $breaksTaken }';
 
     return str;

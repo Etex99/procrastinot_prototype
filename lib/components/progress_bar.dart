@@ -135,8 +135,9 @@ class SessionProgressBar extends StatelessWidget {
 }
 
 class BreakProgressBar extends StatelessWidget {
-  final Duration duration;
-  const BreakProgressBar({super.key, required this.duration});
+  final Duration totalDuration;
+  final Duration elapsedDuration;
+  const BreakProgressBar({super.key, required this.totalDuration, this.elapsedDuration = Duration.zero});
 
   @override
   Widget build(BuildContext context) {
@@ -151,6 +152,6 @@ class BreakProgressBar extends StatelessWidget {
         )
       ],
     );
-    return ProgressBar(targetDuration: duration, elapsedTime: Duration.zero, iconRow: iconRow);
+    return ProgressBar(targetDuration: totalDuration, elapsedTime: elapsedDuration, iconRow: iconRow);
   }
 }

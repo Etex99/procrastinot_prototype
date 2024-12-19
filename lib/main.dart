@@ -19,19 +19,17 @@ class MainApp extends StatelessWidget {
 
           if (snapshot.data == true) {
             return FutureBuilder(
-                future: SessionManager().resumeSession(),
+                future: SessionManager().restoreSession(),
                 builder: (context, AsyncSnapshot snapshot) {
 
                   if (!snapshot.hasData) return const SizedBox.shrink();
 
-                  // TODO: resume session break
                   return MaterialApp(initialRoute: '/session', routes: {
                     '/home': (context) => const HomeView(),
                     '/setup': (context) => const SessionSetupView(),
                     '/settings': (context) => const SettingsView(),
                     '/session': (context) => const SessionView(),
                     '/help': (context) => const SetupHelp(),
-                    '/break': (context) => const BreakView(),
                     '/results': (context) => const SessionResults(),
                     '/analysis': (context) => const SessionAnalysis()
                   });
@@ -44,7 +42,6 @@ class MainApp extends StatelessWidget {
             '/settings': (context) => const SettingsView(),
             '/session': (context) => const SessionView(),
             '/help': (context) => const SetupHelp(),
-            '/break': (context) => const BreakView(),
             '/results': (context) => const SessionResults(),
             '/analysis': (context) => const SessionAnalysis()
           });
