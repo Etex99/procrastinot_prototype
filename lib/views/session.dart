@@ -15,26 +15,18 @@ class SessionView extends StatefulWidget {
   State<SessionView> createState() => _SessionViewState();
 }
 
-class _SessionViewState extends State<SessionView> {
-  Timer? _breakReturn;
-  late AppLifecycleListener _listener;
+class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
+  Timer? _autoBreakReturn;
 
   @override
   void initState() {
     super.initState();
-   
-    _listener = AppLifecycleListener(
-      onPause: () => _handleAppPause(),
-      onRestart: () => _handleAppRestart(),
-    );
+    WidgetsBinding.instance.addObserver(this);
     
     SessionManager s = SessionManager();
-    
     s.startSession();
 
-    if (s.isOnBreak()) {
-      _takeBreak();
-    }
+    if (s.isOnBreak()) _takeBreak();
   }
 
   @override
@@ -132,14 +124,40 @@ class _SessionViewState extends State<SessionView> {
 
   @override
   void dispose() {
-    SessionManager.instance.stopSession();
-    _listener.dispose();
-    if (_breakReturn != null) _breakReturn!.cancel();
+    if (_autoBreakReturn != null) _autoBreakReturn!.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.resumed) {
+      debugPrint("Resumed app.");
+    }
+
+    if (state == AppLifecycleState.paused) {
+      debugPrint("Paused app.");
+    }
+
+    // It is pretty excessive to save the session each time the user hides the app.
+    // This is a quick and dirty way to ensure that system doesn't nuke the data e.g. when cheap devices use "clear all" in app tray.
+    // Luckily this is just a little json string.
+    if (state == AppLifecycleState.inactive) {
+      debugPrint("App is inactive.");
+      SessionManager.instance.preserveSession();
+    }
+
+    if (state == AppLifecycleState.detached) {
+      debugPrint("App is detached.");
+    }
   }
 
   void _exit() {
     SessionManager s = SessionManager();
+    s.endSession();
+
     int doneCounter = 0;
     for (var i = 0; i < s.session.taskSuccess!.length; i++) {
       if (s.session.taskSuccess![i] == true) doneCounter++;
@@ -152,38 +170,14 @@ class _SessionViewState extends State<SessionView> {
 
   void _takeBreak() {
     SessionManager s = SessionManager();
-    _breakReturn = Timer((s.session.breakDuration - s.session.elapsedBreakTime), () => _returnFromBreak());
-    if (!s.isOnBreak()) s.beginBreak(); // This if clause prevents unexpected behaviour when a break is resumed after app was paused
-    setState(() {/* Rebuild view to show break content */},);
+    _autoBreakReturn = Timer((s.session.breakDuration - s.session.elapsedBreakTime), () => _returnFromBreak());
+    if (!s.isOnBreak()) s.beginBreak(); // If-clause ensures break budget is not consumed upon session restore.
+    setState(() {/* Update to show break view */},);
   }
 
   void _returnFromBreak() {
-    if (_breakReturn != null) _breakReturn!.cancel();
+    if (_autoBreakReturn != null) _autoBreakReturn!.cancel();
     SessionManager.instance.endBreak();
     setState(() {/* Rebuild view to show session content */});
-  }
-
-  Future<void> _handleAppPause() async {
-    debugPrint("App paused!");
-    SessionManager s = SessionManager();
-
-    if (_breakReturn != null) _breakReturn!.cancel();
-    await s.pauseSession();
-    debugPrint(s.session.toString());
-  }
-
-  Future<void> _handleAppRestart() async {
-    debugPrint("App restarted!");
-    SessionManager s = SessionManager();
-    await s.restoreSession();
-    debugPrint(s.session.toString());
-
-    s.startSession();
-
-    if (s.isOnBreak()) {
-      _takeBreak();
-    }
-
-    setState(() {/* Rebuild view to update progress bar */});
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/storage/internal_storage.dart';
 
 class SessionManager {
@@ -9,15 +10,21 @@ class SessionManager {
 
   final Stopwatch _stopwatch = Stopwatch();
 
-  void startSession() {
+  Future<void> startSession() async {
+    await InternalStorageHandler().setResumeSession(true);
     _stopwatch.start();
   }
 
+  Future<void> endSession() async {
+    await InternalStorageHandler().setResumeSession(false);
+    _recordAndResetStopwatch();
+    _stopwatch.stop();
+  }
+
   void beginBreak() {
+    _recordAndResetStopwatch();
     session.onBreak = true;
-    session.elapsedTime += _stopwatch.elapsed;
     session.breaksTaken ++;
-    _stopwatch.reset();
   }
 
   void endBreak() {
@@ -26,35 +33,32 @@ class SessionManager {
     _stopwatch.reset();
   }
 
-  void stopSession() {
+  void _recordAndResetStopwatch() {
     if (isOnBreak()) {
       session.elapsedBreakTime += _stopwatch.elapsed;
     } else {
       session.elapsedTime += _stopwatch.elapsed;
     }
-    _stopwatch.stop();
     _stopwatch.reset();
   }
 
   bool isOnBreak() => session.onBreak;
   bool canTakeBreak() => session.breaksTaken < session.allowedBreaks;
   int getTimeDifference() {
-    session.elapsedTime += _stopwatch.elapsed;
+    _recordAndResetStopwatch();
     return session.targetDuration.inMinutes - session.elapsedTime.inMinutes;
   }
 
-  Future<void> pauseSession() async {
+  Future<void> preserveSession() async {
     InternalStorageHandler ish = InternalStorageHandler();
-    await ish.setResumeSession(true);
-    await ish.setPausedTimestamp(DateTime.timestamp());
-    
-    stopSession();
+    await ish.setSessionSaveTimestamp(DateTime.timestamp());
+    _recordAndResetStopwatch();
     await ish.saveSession(session);
+    debugPrint('Preserved session: ${session}');
   }
 
-  Future<bool> restoreSession() async {
+  Future<void> restoreSession() async {
     InternalStorageHandler ish = InternalStorageHandler();
-    await ish.setResumeSession(false);
     
     session = await ish.loadSession();
     DateTime paused = await ish.getPausedTimestamp();
@@ -75,9 +79,10 @@ class SessionManager {
     } else {
       session.elapsedTime += passedTime;
     }
-
-    return true;
+    
+    debugPrint('Restored session: ${session}');
   }
+
 }
 
 class Session {

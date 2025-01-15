@@ -15,7 +15,7 @@ class InternalStorageHandler {
   static const String DEFAULT_NUMBER_OF_BREAKS = 'DEFAULT_NUMBER_OF_BREAKS';
   static const String SESSION_SAVE_FILE = "/session.txt";
   static const String RESUME_SESSION = 'RESUME_SESSION';
-  static const String PAUSED_TIMESTAMP = 'PAUSED_TIMESTAMP';
+  static const String SAVE_TIMESTAMP = 'SAVE_TIMESTAMP';
 
   static Map<String, dynamic> tempSettingsFormValues = {};
 
@@ -75,16 +75,16 @@ class InternalStorageHandler {
     return result;
   }
 
-  Future<void> setPausedTimestamp(DateTime timestamp) async {
+  Future<void> setSessionSaveTimestamp(DateTime timestamp) async {
     final SharedPreferencesAsync sp = SharedPreferencesAsync();
-    await sp.setString(PAUSED_TIMESTAMP, timestamp.toString());
+    await sp.setString(SAVE_TIMESTAMP, timestamp.toString());
   }
   Future<DateTime> getPausedTimestamp() async {
     final SharedPreferencesAsync sp = SharedPreferencesAsync();
     DateTime result = DateTime.timestamp(); // Default value
     String timestampStr;
-    if (await sp.containsKey(PAUSED_TIMESTAMP)) {
-      timestampStr = await sp.getString(PAUSED_TIMESTAMP) as String;
+    if (await sp.containsKey(SAVE_TIMESTAMP)) {
+      timestampStr = await sp.getString(SAVE_TIMESTAMP) as String;
       result = DateTime.parse(timestampStr);
     }
     return result;
