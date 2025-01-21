@@ -17,6 +17,8 @@ class SessionView extends StatefulWidget {
 
 class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
   Timer? _autoBreakReturn;
+  late Timer _situationalMessageUpdater;
+  final ValueNotifier<String> _situationalMessageNotifier = ValueNotifier('Default');
 
   @override
   void initState() {
@@ -27,6 +29,17 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     s.startSession();
 
     if (s.isOnBreak()) _takeBreak();
+
+    _situationalMessageUpdater = Timer.periodic(const Duration(minutes: 1), (timer) {
+      if (s.session.elapsedTime.inMinutes < 5) {
+        _situationalMessageNotifier.value = 'Good luck on your study session!';
+      } else if (s.getMinutesUntilTargetDuration() < 5) {
+        _situationalMessageNotifier.value = 'It is time to end your study session!';
+        timer.cancel();
+      } else if (s.getMinutesUntilSuggestedBreak() < 5) {
+        _situationalMessageNotifier.value = 'It is a good time for a break!';
+      }
+    });
   }
 
   @override
@@ -39,13 +52,19 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
 
     SessionProgressBar progressBar =
         SessionProgressBar(session: s.session);
+    ValueListenableBuilder<String> situationalMessage = ValueListenableBuilder(
+      valueListenable: _situationalMessageNotifier,
+      builder: (BuildContext context, String value, Widget? child) {
+        return MyBodyText(text: value);
+      });
     Widget topBar = Container(
       color: MyTheme.BACKGROUND_COLOR,
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: progressBar
-        ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center, 
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [progressBar, const SizedBox(height: 8,), situationalMessage],)
       ),
     );
 
@@ -115,7 +134,7 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(flex: 1, child: topBar),
-          Flexible(flex: 4, child: middleContent),
+          Flexible(flex: 3, child: middleContent),
           bottomBar
         ],
       ),
@@ -125,7 +144,9 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
   @override
   void dispose() {
     if (_autoBreakReturn != null) _autoBreakReturn!.cancel();
+    _situationalMessageUpdater.cancel();
     WidgetsBinding.instance.removeObserver(this);
+    _situationalMessageNotifier.dispose();
     super.dispose();
   }
 
@@ -164,7 +185,7 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     }
 
     SessionResultsArgs args =
-        SessionResultsArgs(doneCounter, s.getTimeDifference());
+        SessionResultsArgs(doneCounter, s.getMinutesUntilTargetDuration());
     Navigator.pushReplacementNamed(context, '/results', arguments: args);
   }
 
