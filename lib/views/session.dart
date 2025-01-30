@@ -7,7 +7,6 @@ import 'package:procrastinot_prototype/resources/theme.dart';
 import 'package:procrastinot_prototype/views/session_break.dart';
 import 'package:procrastinot_prototype/views/session_results.dart';
 
-
 class SessionView extends StatefulWidget {
   const SessionView({super.key});
 
@@ -18,28 +17,36 @@ class SessionView extends StatefulWidget {
 class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
   Timer? _autoBreakReturn;
   late Timer _situationalMessageUpdater;
-  final ValueNotifier<String> _situationalMessageNotifier = ValueNotifier('Default');
+  final ValueNotifier<String> _situationalMessageNotifier =
+      ValueNotifier('Default');
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     SessionManager s = SessionManager();
     s.startSession();
 
     if (s.isOnBreak()) _takeBreak();
 
-    _situationalMessageUpdater = Timer.periodic(const Duration(minutes: 1), (timer) {
-      if (s.session.elapsedTime.inMinutes < 5) {
+    _updateSituationalMessage(null);
+    _situationalMessageUpdater = Timer.periodic(const Duration(minutes: 1), (timer) => _updateSituationalMessage(timer));
+  }
+
+  _updateSituationalMessage(Timer? timer) {
+    SessionManager s = SessionManager.instance;
+    if (s.getElapsedMinutes() < 5) {
         _situationalMessageNotifier.value = 'Good luck on your study session!';
       } else if (s.getMinutesUntilTargetDuration() < 5) {
-        _situationalMessageNotifier.value = 'It is time to end your study session!';
-        timer.cancel();
+        _situationalMessageNotifier.value =
+            'It is time to end your study session!';
+        timer?.cancel();
       } else if (s.getMinutesUntilSuggestedBreak() < 5) {
         _situationalMessageNotifier.value = 'It is a good time for a break!';
+      } else {
+        _situationalMessageNotifier.value = 'Keep your focus on the tasks.';
       }
-    });
   }
 
   @override
@@ -47,25 +54,34 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     SessionManager s = SessionManager();
 
     if (s.isOnBreak()) {
-      return BreakView(totalDuration: s.session.breakDuration, elapsedDuration: s.session.elapsedBreakTime, returnCallback: () => _returnFromBreak(),);
+      return BreakView(
+        totalDuration: s.session.breakDuration,
+        elapsedDuration: s.session.elapsedBreakTime,
+        returnCallback: () => _returnFromBreak(),
+      );
     }
 
-    SessionProgressBar progressBar =
-        SessionProgressBar(session: s.session);
+    SessionProgressBar progressBar = SessionProgressBar(session: s.session);
     ValueListenableBuilder<String> situationalMessage = ValueListenableBuilder(
-      valueListenable: _situationalMessageNotifier,
-      builder: (BuildContext context, String value, Widget? child) {
-        return MyBodyText(text: value);
-      });
+        valueListenable: _situationalMessageNotifier,
+        builder: (BuildContext context, String value, Widget? child) {
+          return MyBodyText(text: value);
+        });
     Widget topBar = Container(
       color: MyTheme.BACKGROUND_COLOR,
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center, 
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [progressBar, const SizedBox(height: 8,), situationalMessage],)
-      ),
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              progressBar,
+              const SizedBox(
+                height: 8,
+              ),
+              situationalMessage
+            ],
+          )),
     );
 
     Function()? breakButtonFunc;
@@ -123,7 +139,12 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.center,
-        children: [exitButton, const SizedBox(width: 8.0,)],
+        children: [
+          exitButton,
+          const SizedBox(
+            width: 8.0,
+          )
+        ],
       ),
     );
 
@@ -191,14 +212,20 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
 
   void _takeBreak() {
     SessionManager s = SessionManager();
-    _autoBreakReturn = Timer((s.session.breakDuration - s.session.elapsedBreakTime), () => _returnFromBreak());
-    if (!s.isOnBreak()) s.beginBreak(); // If-clause ensures break budget is not consumed upon session restore.
-    setState(() {/* Update to show break view */},);
+    _autoBreakReturn = Timer(
+        (s.session.breakDuration - s.session.elapsedBreakTime),
+        () => _returnFromBreak());
+    if (!s.isOnBreak())
+      s.beginBreak(); // If-clause ensures break budget is not consumed upon session restore.
+    setState(
+      () {/* Update to show break view */},
+    );
   }
 
   void _returnFromBreak() {
     if (_autoBreakReturn != null) _autoBreakReturn!.cancel();
     SessionManager.instance.endBreak();
+    _updateSituationalMessage(null);
     setState(() {/* Rebuild view to show session content */});
   }
 }

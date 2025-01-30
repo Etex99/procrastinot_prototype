@@ -44,15 +44,19 @@ class SessionManager {
 
   bool isOnBreak() => session.onBreak;
   bool canTakeBreak() => session.breaksTaken < session.allowedBreaks;
+  int getElapsedMinutes() {
+    _recordAndResetStopwatch();
+    return session.elapsedTime.inMinutes;
+  }
   int getMinutesUntilTargetDuration() {
     _recordAndResetStopwatch();
     return session.targetDuration.inMinutes - session.elapsedTime.inMinutes;
   }
   int getMinutesUntilSuggestedBreak() {
     _recordAndResetStopwatch();
-    int idealTimeWindowInMinutes = (session.targetDuration.inMinutes / (session.allowedBreaks + 1)).floor();
-    int idealElapsedMinutes = idealTimeWindowInMinutes * (session.breaksTaken + 1);
-    return idealElapsedMinutes - (session.elapsedTime.inMinutes).floor();
+    double idealTimeWindowInMinutes = session.targetDuration.inMinutes / (session.allowedBreaks + 1);
+    double nextBreak = idealTimeWindowInMinutes * (session.breaksTaken + 1);
+    return (nextBreak - session.elapsedTime.inMinutes).floor();
   }
   
 
