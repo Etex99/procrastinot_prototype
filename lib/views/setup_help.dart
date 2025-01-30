@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:procrastinot_prototype/components/app_bar.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SetupHelp extends StatelessWidget {
+  final String _url = "https://www.indeed.com/career-advice/career-development/how-to-write-smart-goals";
   const SetupHelp({super.key});
+
+  Future<void> _launchURL() async {
+    try {
+      Uri url = Uri.parse(_url);
+      if (!await launchUrl(url)) {
+        throw Exception('Could not launch $url');
+      }
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,19 +53,19 @@ class SetupHelp extends StatelessWidget {
                                       'SMART is an acronym for ingredients of a well-formulated goal'),
                               MySubtitle(text: 'S pecific'),
                               MySubtitle(text: 'M easurable'),
-                              MySubtitle(text: 'A ttainable'),
+                              MySubtitle(text: 'A chievable'),
                               MySubtitle(text: 'R relevant'),
-                              MySubtitle(text: 'T imely'),
+                              MySubtitle(text: 'T ime-based'),
                               Divider(color: MyTheme.PRIMARY_COLOR),
                               MyBodyText(
                                   text:
                                       'This application has been designed to help you take small but effective steps towards your studying goals'),
-                              MyBodyText(text: 'In practice, before choosing your daily tasks consider the following:'),
-                              MySubtitle(text: 'What is my goal? Which grade or level of quality am I satisfied with for my work?'),
-                              MySubtitle(text: 'How do I break up my larger projects into digestible tasks?'),
-                              MySubtitle(text: 'How much time do I have available? Can someone assist me if I struggle?'),
-                              MySubtitle(text: 'What needs to be prioritized right now? Which deadlines are approaching?'),
-                              MySubtitle(text: 'How do I ensure continuous progress? What time of day am I most productive?'),
+                              MyBodyText(text: 'In practice, when choosing a task consider the following:'),
+                              MySubtitle(text: 'What is it that I want to achieve?'),
+                              MySubtitle(text: 'Which measurable actions do I need to take?'),
+                              MySubtitle(text: 'Do I have the needed resources?'),
+                              MySubtitle(text: 'Is completing this task worthwhile?'),
+                              MySubtitle(text: 'What can I achieve in the time I have allocated for studying today?'),
                             ],
                           ),
                         ))),
@@ -63,9 +76,8 @@ class SetupHelp extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         const MyBodyText(text: 'More about SMART-goals'),
-                        // TODO: link an external source.
                         IconButton(
-                            onPressed: () {},
+                            onPressed: _launchURL,
                             icon: const Icon(
                               Icons.open_in_browser,
                               color: MyTheme.ACCENT_COLOR,
