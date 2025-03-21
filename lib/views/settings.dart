@@ -33,9 +33,19 @@ class SettingsView extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           IconButton(
+
                               onPressed: () {
                                 InternalStorageHandler().saveSettings();
+                                showDialog(context: context, builder: (BuildContext dialogContext) {
+                                  Future.delayed(const Duration(seconds: 3), () {
+                                    if (dialogContext.mounted) Navigator.pop(dialogContext);
+                                  });
+                                  return const AlertDialog(
+                                    content: MyBodyText(text: "Settings saved."),
+                                  );
+                                });
                               },
+                              
                               icon: const Icon(
                                 Icons.save,
                                 color: MyTheme.ACCENT_COLOR,
