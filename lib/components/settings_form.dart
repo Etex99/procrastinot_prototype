@@ -12,6 +12,7 @@ class SettingsForm extends StatefulWidget {
 }
 
 class _SettingsFormState extends State<SettingsForm> {
+  bool valuesFetched = false;
   TextEditingController notificationTimeC = TextEditingController();
   TextEditingController studyTimeC = TextEditingController();
   TextEditingController breakTimeC = TextEditingController();
@@ -43,11 +44,15 @@ class _SettingsFormState extends State<SettingsForm> {
     numberBreaksC = TextEditingController(
         text: (await i.getDefaultNumberOfBreaks()).toString());
 
-    setState(() {});
+    setState(() { valuesFetched = true; });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!valuesFetched) {
+      return const Center(child: MyBodyText(text: "Loading..."));
+    }
+
     Column selectDays = const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
