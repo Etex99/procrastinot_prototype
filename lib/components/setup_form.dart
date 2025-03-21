@@ -17,6 +17,7 @@ class SetupForm extends StatefulWidget {
 }
 
 class _SetupFormState extends State<SetupForm> {
+  bool valuesFetched = false;
   TextEditingController studyDurationC = TextEditingController();
   TextEditingController breakDurationC = TextEditingController();
   TextEditingController numberBreaksC = TextEditingController();
@@ -59,11 +60,13 @@ class _SetupFormState extends State<SetupForm> {
     numberBreaksC = TextEditingController(
         text: (numberB.toString()));
 
-    setState(() {});
+    setState(() { valuesFetched = true; });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!valuesFetched) return const Center(child: MyBodyText(text: "Loading..."));
+    
     return ListView(
       itemExtentBuilder: (index, _) {
         if ((index == 0) | (index == 5)) return 50;
