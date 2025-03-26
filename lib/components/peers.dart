@@ -50,6 +50,7 @@ class _PeersState extends State<Peers> {
       mainAxisSize: MainAxisSize.min,
       children: [
         completions,
+        const SizedBox(height: 50),
         situationalMessage
       ],
     );
@@ -70,7 +71,7 @@ class _PeersState extends State<Peers> {
     InternalStorageHandler ish = InternalStorageHandler();
     ish.setMockPeopleCount(newCount);
     ish.setLastMock(DateTime.timestamp());
-    
+
     return newCount;
   }
 }
