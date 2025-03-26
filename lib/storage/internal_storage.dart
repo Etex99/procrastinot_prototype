@@ -16,6 +16,8 @@ class InternalStorageHandler {
   static const String SESSION_SAVE_FILE = "/session.txt";
   static const String RESUME_SESSION = 'RESUME_SESSION';
   static const String SAVE_TIMESTAMP = 'SAVE_TIMESTAMP';
+  static const String MOCK_PEOPLE_COUNT = 'MOCK_PEOPLE_COUNT';
+  static const String MOCK_TIMESTAMP = 'MOCK_TIMESTAMP';
 
   static Map<String, dynamic> tempSettingsFormValues = {};
 
@@ -176,6 +178,33 @@ class InternalStorageHandler {
     final SharedPreferencesAsync sp = SharedPreferencesAsync();
     int result = 1; // Default value
     if (await sp.containsKey(DEFAULT_NUMBER_OF_BREAKS)) result = await sp.getInt(DEFAULT_NUMBER_OF_BREAKS) as int;
+    return result;
+  }
+
+  Future<void> setMockPeopleCount(int i) async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    await sp.setInt(MOCK_PEOPLE_COUNT, i);
+  }
+
+  Future<int> getMockPeopleCount() async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    int result = 0; // Default value
+    if (await sp.containsKey(MOCK_PEOPLE_COUNT)) result = await sp.getInt(MOCK_PEOPLE_COUNT) as int;
+    return result;
+  }
+
+  Future<void> setLastMock(DateTime timestamp) async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    await sp.setString(MOCK_TIMESTAMP, timestamp.toString());
+  }
+  Future<DateTime> getLastMock() async {
+    final SharedPreferencesAsync sp = SharedPreferencesAsync();
+    DateTime result = DateTime.fromMicrosecondsSinceEpoch(0); // Default value
+    String timestampStr;
+    if (await sp.containsKey(MOCK_TIMESTAMP)) {
+      timestampStr = await sp.getString(MOCK_TIMESTAMP) as String;
+      result = DateTime.parse(timestampStr);
+    }
     return result;
   }
 }

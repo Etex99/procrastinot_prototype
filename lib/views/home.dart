@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:procrastinot_prototype/components/peers.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
 import 'package:procrastinot_prototype/components/app_bar.dart';
 
@@ -24,9 +25,7 @@ class HomeView extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      const Text('10 peers have completed a study session today.', style: MyTheme.SUBTITLE_TEXT_STYLE, textAlign: TextAlign.center),
-                      const Text('2 peers are studying right now.', style: MyTheme.SUBTITLE_TEXT_STYLE, textAlign: TextAlign.center),
-                      const Text('Are you ready to join them?', style: MyTheme.SUBTITLE_TEXT_STYLE, textAlign: TextAlign.center),
+                      const Peers(),
                       MyElevatedButton(text: 'Start a study session!', onPressed: () => Navigator.pushNamed(context, '/setup'))
                     ],
                   )
