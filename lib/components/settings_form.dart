@@ -13,7 +13,6 @@ class SettingsForm extends StatefulWidget {
 
 class _SettingsFormState extends State<SettingsForm> {
   bool valuesFetched = false;
-  TextEditingController notificationTimeC = TextEditingController();
   TextEditingController studyTimeC = TextEditingController();
   TextEditingController breakTimeC = TextEditingController();
   TextEditingController numberBreaksC = TextEditingController();
@@ -27,7 +26,6 @@ class _SettingsFormState extends State<SettingsForm> {
   @override
   void dispose() {
     super.dispose();
-    notificationTimeC.dispose();
     studyTimeC.dispose();
     breakTimeC.dispose();
     numberBreaksC.dispose();
@@ -35,8 +33,6 @@ class _SettingsFormState extends State<SettingsForm> {
 
   void _initTextControllers() async {
     InternalStorageHandler i = InternalStorageHandler();
-    notificationTimeC = TextEditingController(
-        text: MyFormatter.timeOfDayToString(await i.getNotificationTime()));
     studyTimeC = TextEditingController(
         text: MyFormatter.durationToString(await i.getDefaultStudyDuration()));
     breakTimeC = TextEditingController(
@@ -53,53 +49,9 @@ class _SettingsFormState extends State<SettingsForm> {
       return const Center(child: MyBodyText(text: "Loading..."));
     }
 
-    Column selectDays = const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        MyBodyText(text: 'On the following weekdays:'),
-        Row(
-          children: [
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder()),
-            Spacer(flex: 1),
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder()),
-            Spacer(flex: 1),
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder()),
-            Spacer(flex: 1),
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder()),
-            Spacer(flex: 1),
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder()),
-            Spacer(flex: 1),
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder()),
-            Spacer(flex: 1),
-            SizedBox(width: 25.0, height: 25.0, child: Placeholder())
-          ],
-        ),
-      ],
-    );
-
     return ListView(
-      itemExtentBuilder: (index, _) {
-        if ((index == 0) | (index == 4)) return 50;
-        if (index == 3) return 25;
-        return 100;
-      },
+      itemExtent: 100,
       children: [
-        const Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            MySubtitle(text: 'Reminders'),
-            Spacer(flex: 1),
-            SizedBox(width: 50.0, height: 50.0, child: Placeholder()),
-          ],
-        ),
-        SelectTimeField(
-          labelText: 'Remind me to study at:',
-          hintText: '16.00',
-          controller: notificationTimeC,
-          valueChanged: (String s) => InternalStorageHandler.tempSettingsFormValues[InternalStorageHandler.NOTIFICATION_TIME] = s,),
-        selectDays,
-        const Divider(color: MyTheme.PRIMARY_COLOR),
         const Align(
             alignment: Alignment.centerLeft,
             child: MySubtitle(text: 'Defaults')),
