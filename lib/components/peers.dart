@@ -15,20 +15,37 @@ class _PeersState extends State<Peers> {
 
   @override
   void initState() {
-    InternalStorageHandler ish = InternalStorageHandler();
-    ish.getLastMock().then((time) => {
-      if (DateTime.now().difference(time) > const Duration(hours: 1)) {
-        ish.getMockPeopleCount().then((count) => setState(() {
-          mockValue = _mockPeopleCount(count);
-        }))
-      } else {
-        ish.getMockPeopleCount().then((count) => setState(() {
-          mockValue = count;
-        }))
-      }
-    });
     super.initState();
+    InternalStorageHandler ish = InternalStorageHandler();
+    DateTime now = DateTime.now();
+
+    ish.getLastMock().then((time) {
+
+      //start from 0 on a new day
+      if (now.day != time.day) {
+        setState(() {
+          mockValue = _mockPeopleCount(0);
+        });
+        return;
+      }
+      //prevent increment multiple times an hour so that mock value is more believable.
+      if (now.hour != time.hour) {
+        ish.getMockPeopleCount().then((count) {
+          setState(() {
+            mockValue = _mockPeopleCount(count);
+          });
+        });
+        return;
+      }
+      //otherwise use the last mock value.
+      ish.getMockPeopleCount().then((count) {
+        setState(() {
+          mockValue = count;
+        });
+      });
+    });
   }
+
   @override
   Widget build(BuildContext context) {
     if (mockValue == -1) {
