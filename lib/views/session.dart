@@ -6,6 +6,7 @@ import 'package:procrastinot_prototype/data/session.dart';
 import 'package:procrastinot_prototype/resources/theme.dart';
 import 'package:procrastinot_prototype/views/session_break.dart';
 import 'package:procrastinot_prototype/views/session_results.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class SessionView extends StatefulWidget {
   const SessionView({super.key});
@@ -19,6 +20,7 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
   late Timer _situationalMessageUpdater;
   final ValueNotifier<String> _situationalMessageNotifier =
       ValueNotifier('Default');
+  late AudioPlayer breakOver;
 
   @override
   void initState() {
@@ -32,6 +34,10 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
 
     _updateSituationalMessage(null);
     _situationalMessageUpdater = Timer.periodic(const Duration(minutes: 1), (timer) => _updateSituationalMessage(timer));
+
+    AudioLogger.logLevel = AudioLogLevel.info;
+    breakOver = AudioPlayer();
+    breakOver.setReleaseMode(ReleaseMode.stop);
   }
 
   _updateSituationalMessage(Timer? timer) {
@@ -168,6 +174,7 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     _situationalMessageUpdater.cancel();
     WidgetsBinding.instance.removeObserver(this);
     _situationalMessageNotifier.dispose();
+    breakOver.dispose();
     super.dispose();
   }
 
@@ -215,8 +222,7 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     _autoBreakReturn = Timer(
         (s.session.breakDuration - s.session.elapsedBreakTime),
         () => _returnFromBreak());
-    if (!s.isOnBreak())
-      s.beginBreak(); // If-clause ensures break budget is not consumed upon session restore.
+    if (!s.isOnBreak()) s.beginBreak(); // If-clause ensures break budget is not consumed upon session restore.
     setState(
       () {/* Update to show break view */},
     );
@@ -226,6 +232,7 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     if (_autoBreakReturn != null) _autoBreakReturn!.cancel();
     SessionManager.instance.endBreak();
     _updateSituationalMessage(null);
+    breakOver.play(AssetSource("audio/break_over.mp3"));
     setState(() {/* Rebuild view to show session content */});
   }
 }
