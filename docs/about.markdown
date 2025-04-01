@@ -4,15 +4,12 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+Procrastinot prototype is a master's thesis research artefact developed for studying academic procrastination in students.
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+The prototype was developed using Persuasive Systems Design (PSD) model.
+More specifically, the research target was designing a novel Behaviour Change Support System (BCSS) to alleviate academic procrastination.
+PSD and BCSS are both rather young constructs of research aimed to enable a more systematic approach to studying computer systems intended for helping its users alter their behaviour.
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+For more information on the study and the methods applied, please refer to the thesis. * Finished thesis link to be added *
 
-
-[jekyll-organization]: https://github.com/jekyll
+Updated: 01/04/2025
