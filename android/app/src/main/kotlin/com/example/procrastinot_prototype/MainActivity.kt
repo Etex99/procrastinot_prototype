@@ -1,4 +1,4 @@
-package com.example.procrastinot_prototype
+package com.etex99.procrastinot
 
 import io.flutter.embedding.android.FlutterActivity
 

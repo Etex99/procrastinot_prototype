@@ -15,7 +15,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    namespace = "com.example.procrastinot_prototype"
+    namespace = "com.etex99.procrastinot"
     compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
@@ -30,13 +30,13 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.procrastinot_prototype"
+        applicationId = "com.etex99.procrastinot"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.1"
     }
 
     signingConfigs {
@@ -50,7 +50,6 @@ android {
 
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
             signingConfig = signingConfigs.getByName("release")
         }
     }
