@@ -21,6 +21,9 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
   final ValueNotifier<String> _situationalMessageNotifier =
       ValueNotifier('Default');
   late AudioPlayer breakOver;
+  bool awake = true;
+  bool paused = false;
+  bool preventBuild = false;
 
   @override
   void initState() {
@@ -57,6 +60,8 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    if (preventBuild) return const Center(child: MyBodyText(text: "loading...",));
+
     SessionManager s = SessionManager();
 
     if (s.isOnBreak()) {
@@ -183,11 +188,17 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     super.didChangeAppLifecycleState(state);
 
     if (state == AppLifecycleState.resumed) {
-      debugPrint("Resumed app.");
-    }
+      debugPrint("App is resumed.");
+      awake = true;
 
-    if (state == AppLifecycleState.paused) {
-      debugPrint("Paused app.");
+      //when app is resumed we want to ensure session data is good to go before building the whole view.
+      if (paused) {
+        recoverFromAppPause().then((val) {
+          preventBuild = false;
+          setState(() {});
+        });
+        paused = false;
+      }
     }
 
     // It is pretty excessive to save the session each time the user hides the app.
@@ -195,12 +206,22 @@ class _SessionViewState extends State<SessionView> with WidgetsBindingObserver {
     // Luckily this is just a little json string.
     if (state == AppLifecycleState.inactive) {
       debugPrint("App is inactive.");
-      SessionManager.instance.preserveSession();
+      if (awake) {
+        SessionManager.instance.preserveSession();
+        awake = false;
+      }
     }
 
-    if (state == AppLifecycleState.detached) {
-      debugPrint("App is detached.");
+    if (state == AppLifecycleState.paused) {
+      debugPrint("App is paused.");
+      paused = true;
+      preventBuild = true;
     }
+  }
+
+  Future<void> recoverFromAppPause() async {
+    debugPrint("Recovering from app pause...");
+    await SessionManager().restoreSession();
   }
 
   void _exit() {

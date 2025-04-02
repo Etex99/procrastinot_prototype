@@ -91,6 +91,10 @@ class SessionManager {
       session.elapsedTime += passedTime;
     }
     
+    //stopwatch reset when recovering state without app kill.
+    _stopwatch.reset();
+    _stopwatch.start();
+
     debugPrint('Restored session: ${session}');
   }
 
