@@ -51,7 +51,4 @@ Study breaks are taken manually by tapping the "coffee cup". Breaks will end aut
 End the study session by tapping the "red door". This can be done at any point in time. You should leave any undone tasks unchecked.
 
 > Note:
-> Due to technical challenges there are two major issues that you may face when monitoring an active study session.
-> 1. The app may stop tracking time correctly if the application is "killed" by the operating system preventing it from running in the background.
-> 2. For the same reason, the app may not play a sound when a break has ended.
-> To tackle these issues please read the important notes in the [Installation Guide](https://etex99.github.io/procrastinot_prototype/instructions/2025/04/01/installation-guide.html).
+> Due to technical challenges the app may not play a sound when the break has ended. This is a known issue. Completing actions described in step 3. of the [installation guide](https://etex99.github.io/procrastinot_prototype/instructions/2025/04/01/installation-guide.html) may alleviate this problem.
