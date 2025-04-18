@@ -26,6 +26,5 @@ Still interested in participating? Follow the steps below!
 
 TODO: add [link to the survey on Webropol]()
 
-> With any questions regarding the study or any arising issues you can reach me through the following email address.
-> ekemppai18@student.oulu.fi
+> With any questions regarding the study or any arising issues you can reach me through the email address found at the bottom of the web-page.
 
