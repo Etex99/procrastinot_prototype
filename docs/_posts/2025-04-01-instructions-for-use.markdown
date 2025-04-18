@@ -5,23 +5,20 @@ date:   2025-04-01
 categories: instructions
 ---
 
-Because this app is a prototype using the app is not as streamlined as one would hope and you may encounter issues.
-However, great effort has been exerted to keep the user interface minimal and clear.
-This post introduces the main functions of the system and **highlights certain quirks** (see the block quotes).
+> Because this app is a prototype using the app is not as streamlined as one would hope and you may encounter issues. However, great effort has been exerted to keep the user interface minimal and clear. This post introduces the main functions of the system and highlights certain quirks **Please read minimum "In a Nutshell" and the block quotes if you do not read the entire page**.
 
 ## In a Nutshell
 
 The app is intended to be used as follows:
 
-1. Each day of self-study, you may **start a study session** by tapping the large green button on the home page.
-2. Then, you may **plan your study session** by entering study duration and breaks as well as three priority study tasks.
+1. Each time you must independently study, you may **start a study session** by tapping the large green button on the home page.
+2. Then, you may **plan your study session** by filling the form and benefitting from the provided information page by tapping the "question mark".
 3. After confirming the plan, you may **monitor your study session** initiating study breaks and marking tasks completed as you go.
 4. You may at any time **end the study session** by tapping the "red door" and receive a short **summary of your session**.
-5. Depending on your study session success you may directly return to the home page by tapping another "red door" or **view session insights** by tapping the "green gear head"
+5. Depending on your study session success you may directly return to the home page by tapping another "red door" or **view session insights** by tapping the "green gear-head"
 6. Session insights potentially offers you helpful suggestions for improving your study habits.
 
 Optionally, you can edit **app settings** to customise the default study plan items.
-And lastly, you may view tips and strategies on the **help page for study planning** by tapping the "question mark" on the session setup page.
 
 ### App settings
 
@@ -39,8 +36,7 @@ In essence, if you habitually self-study for 4 hours taking a 10 minute break af
 Fill all of the form fields to be able to start your study session. Yes, you must enter a strict number of three study tasks, this is intended by design!
 After the form is full and valid, a "green checkmark" will appear at the bottom of the screen to confirm your choices. 
 
-> Note:
-> - Due to the implementation the "green checkmark" will only appear if the last text-input is finished by pressing "confirm" on the virtual keyboard. Hiding the keyboard by tapping "back" will not work.
+> Note: Due to the implementation the "green checkmark" will only appear if the last text-input is finished by pressing "confirm" on the virtual keyboard. Hiding the keyboard by tapping "back" or outside of the writing space will not work.
 
 ### Monitor your study sessions
 
