@@ -14,7 +14,7 @@ The application does not...
 * Communicate over the internet
 * Touch files that do not strictly belong to itself
 
-I have personally tested and ran this application on my own device and scanned it via Google Play Protect (antimalware system) to detect harmful behaviour. However, if you are not comfortable installing the application on your device you may withdaw from the study now. 
+I have personally tested and ran this application on my own device and scanned it via Google Play Protect (antimalware system) to detect harmful behaviour. However, if you are not comfortable installing the application on your device you can back down now, and not participate in the survey study. 
 
 ### Step 1. Download the Android Package Kit (apk) on your device
 
@@ -23,7 +23,7 @@ An apk is a file format used for distribution and installation of android apps. 
 On your android device, tap the following link to begin downloading the apk file:
 >[procrastinot-prototype-v-1-1-1.apk](https://github.com/Etex99/procrastinot_prototype/releases/download/v1.1.1/procrastinot-prototype-v-1-1-1.apk)
 
-At this point you may receive a pop-up warning that states that the file type may be harmful to your system. Bypass this message and keep the file anyway. 
+At this point you may receive a pop-up warning that states that the file type may be harmful to your system. This is a standard message the system prints for all apk files whether they are harmful or not. Bypass this message and keep the file anyway. 
 
 ### Step 2. Use the apk to install the app on your device
 
@@ -33,7 +33,7 @@ Alternatively, you can find the file in the device's file explorer.
 Different manufacturers of android devices use different names for their file explorer apps. For instance, Samsung calls theirs "My Files" while on my Nokia it's called simply "Files".
 The folder location of the files may also differ between devices but one common place is a folder called "Downloads".
 
-Tapping the file causes the system to prepare installation of the app. It is at this point that you likely need to bypass a few warnings set out by the system to proceed.
+Tapping the file causes the system to prepare installation of the app. It is at this point that you most likely need to bypass a few warnings set out by the system to proceed.
 
 If you receive "**installation blocked from unknown source**" or similar message, you must temporarily modify the device settings to allow installation of applications from unknown sources. The message should include a link to the correct settings location. On most devices, installation permission is granted for different applications separately. So, if you are installing the application from the "Files" app, you must grant installation from unknown sources permission to "Files". 
 
