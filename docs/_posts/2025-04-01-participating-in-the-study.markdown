@@ -21,7 +21,7 @@ Still interested in participating? Follow the steps below!
 
 3. Try the app in a real setting! In other words, try to utilise the app next time you study or do independent coursework outside of the classroom. Instructions for use include a brief description of the intended way to use the app.
 
-4. Enter the survey study by submitting your answers **by Tuesday 6th of May 2025**! [Link to the survey on Webropol](https://link.webropolsurveys.com/S/DF3734D2C682A175)
+4. Enter the survey study by submitting your answers **by Sunday 11th of May 2025**! [Link to the survey on Webropol](https://link.webropolsurveys.com/S/DF3734D2C682A175)
 
 > With any questions regarding the study or any arising issues you can reach me through the email address found at the bottom of the web-page.
 
