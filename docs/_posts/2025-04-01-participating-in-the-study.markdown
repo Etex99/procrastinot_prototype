@@ -19,7 +19,7 @@ Still interested in participating? Follow the steps below!
 
 2. Familiarize yourself with the [instructions for use](https://etex99.github.io/procrastinot_prototype/instructions/2025/04/01/instructions-for-use.html)
 
-3. Try the app in a real setting! In other words, try to utilise the app next time you study or do independent coursework outside of the classroom. Instructions for use include a brief description of the intended way to use the app.
+3. Try the app! In other words, try to utilise the app next time you study or do independent coursework outside of the classroom. If this is not possible, you may also pretend to be studying, but a real setting is preferred. Instructions for use include a brief description of the intended way to use the app.
 
 4. Enter the survey study by submitting your answers **by Sunday 11th of May 2025**! [Link to the survey on Webropol](https://link.webropolsurveys.com/S/DF3734D2C682A175)
 
