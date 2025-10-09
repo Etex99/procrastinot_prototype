@@ -1,4 +1,7 @@
+# Ignore all files except contents of the docs folder.
+# Necessary so one doesn't need to battle with the untracked files of the main branch.
+
 *
 !.gitignore
 !docs/
-!docs/_posts/
+!docs/**
